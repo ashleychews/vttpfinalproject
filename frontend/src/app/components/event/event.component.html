@@ -1,0 +1,37 @@
+<!-- Search form -->
+<form class="search-form" [formGroup]="searchForm" (submit)="onSearch()">
+    <mat-form-field appearance="outline">
+        <input matInput placeholder="Search by event" formControlName="keyword">
+        <button mat-button matSuffix type="submit">
+            <mat-icon>search</mat-icon>
+        </button>
+    </mat-form-field>
+</form>
+
+<select (change)="onCountrySelect($event)">
+    <option value="" disabled>Select a country</option>
+    <option *ngFor="let country of countries" [value]="country.name">
+        <img [src]="'/assets/flags/' + country.code + '.png'" class="flag-icon"> {{ country.name }}
+    </option>
+</select>
+
+<div class="card-container" *ngIf="events$ | async as events">
+    <div *ngIf="events.length>0" class="card-wrapper">
+        <mat-card *ngFor="let event of events" class="card">
+            <img mat-card-image [src]="event.imageUrl">
+            <mat-card-content>
+                <mat-card-title>{{ event.name }}</mat-card-title>
+                <mat-card-subtitle>{{event.localDate | date: 'EEE, d MMM y' }} ({{ formatTime(event.localTime) }})</mat-card-subtitle>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div *ngIf="events.length <= 0" class="results-container">
+        <div class="text">No Events currently</div>
+    </div>
+</div>
+
+<div class="buttons">
+    <button mat-button (click)="loadPreviousPage()" [disabled]="!hasPreviousPage">Previous</button>
+    <button mat-button (click)="loadNextPage()" [disabled]="!hasNextPage">Next</button>
+</div>

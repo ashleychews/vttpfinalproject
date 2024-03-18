@@ -1,0 +1,25 @@
+<mat-toolbar color="white">
+    <span><img class="img" src="/assets/TIXBUDS.gif"></span>
+
+    <span class="header"></span>
+
+    <button mat-button [routerLink]="['/']">Home</button>
+    <button mat-button [routerLink]="['/events']">Events</button>
+
+    <ng-container *ngIf="isLoggedIn(); else loggedOutTemplate">
+        <!-- Display "My Account" and "Sign Out" options when logged in -->
+        <button mat-button [matMenuTriggerFor]="menu">My Account</button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item [routerLink]="['/profile']">My profile</button>
+            <button mat-menu-item (click)="logout()">Sign Out</button>
+        </mat-menu>
+    </ng-container>
+
+    <ng-template #loggedOutTemplate>
+        <!-- Display "Sign In/Register" option when logged out -->
+        <button mat-button [routerLink]="['/login']">
+            <mat-icon>person_outline</mat-icon>Sign In/Register
+        </button>
+    </ng-template>
+</mat-toolbar>
+

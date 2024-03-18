@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.img {
+    height: 80px;
+    width: auto;
+    margin-top: 5%;
+}
+
+.mat-toolbar{
+    background-color: white;
+    min-height: 80px;
+}
+
+.header {
+    flex: 1 1 auto;
+}
+
+/* Align the form fields vertically */
+form {
+    display: flex;
+    flex-direction: column;
+    width: 300px; /* Adjust the width as needed */
+    margin: 0 auto; /* Center the form horizontally */
+}
+
+mat-card-title {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+}
+
+mat-form-field {
+    margin-bottom: 5px;
+    font-size: 12px;
+}

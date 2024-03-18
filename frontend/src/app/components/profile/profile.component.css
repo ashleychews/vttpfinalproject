@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+.mat-card {
+    font-family: "Lato", sans-serif;
+}
+
+.profile-card {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 2px;
+}
+  
+.profile-card-header {
+    font-size: 12px;
+    margin-bottom: 10px;
+    background-color: aliceblue;
+}
+  
+.profile-card-content {
+    font-size: 10px;
+}
+  
+.profile-card-content p {
+    margin-bottom: 8px;
+}
+  

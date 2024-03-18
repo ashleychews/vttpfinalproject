@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:400,900,800,500,700,600');
+
+.img {
+    height: 80px;
+    width: auto;
+    margin-top: 5%;
+    position: relative;
+    z-index: 1;
+}
+
+.mat-toolbar{
+    background-color: white;
+    min-height: 80px;
+    position: relative;
+    z-index: 1;
+}
+
+.header {
+    flex: 1 1 auto;
+}

@@ -1,0 +1,44 @@
+<div *ngIf="profile" class="profile-card">
+    <mat-card>
+        <mat-card-header class="profile-card-header">Personal Details</mat-card-header>
+        <mat-card-content class="profile-card-content">
+            <ng-container *ngIf="!isEditing; else editMode">
+                <p>First Name: {{ profile.firstname }}</p>
+                <p>Last Name: {{ profile.lastname }}</p>
+                <p>Birth Date: {{ profile.birthdate }}</p>
+                <p>Phone Number: {{ profile.phoneNo }}</p>
+            </ng-container>
+        </mat-card-content>
+
+        
+        <ng-template #editMode>
+            <mat-card-content class="profile-card-content">
+                <form [formGroup]="profileForm" (submit)="onSubmit()">
+                    <p>First Name: 
+                        <input matInput placeholder="First Name" formControlName="firstname">
+                    </p>
+                    <p>Last Name: 
+                        <input matInput placeholder="Last Name" formControlName="lastname">
+                    </p>
+                    <p>Birth Date: 
+                        <input matInput placeholder="Birth Date" formControlName="birthdate">
+                    </p>
+                    <p>Phone Number: 
+                        <input matInput placeholder="Phone Number" formControlName="phoneNo">
+                    </p>
+
+                <mat-card-actions>
+                    <button type="submit">Save</button>
+                    <button (click)="toggleEditing()">Cancel</button>
+                </mat-card-actions>
+
+                </form>
+            </mat-card-content>
+        </ng-template>
+
+        <mat-card-actions>
+            <button (click)="toggleEditing()" *ngIf="!isEditing">Edit</button>
+        </mat-card-actions>
+
+    </mat-card>
+</div>
