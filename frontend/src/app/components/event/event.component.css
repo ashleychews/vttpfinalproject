@@ -1,52 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-
-.card-container {
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 1200px; /* Set a maximum width for the card container */
-    margin: 0 auto;
-}
-
-.card {
-    width: calc(33.33% - 20px); /* Set the width of each card */
-    margin-bottom: 20px; /* Add margin between cards */
-    margin-right: 5%;
-    border: 1px solid #ccc;
-    max-width: 300px; /* Set a maximum width for the cards */
-}
-.card-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: center; /* Center cards horizontally */
-}
-
-
-.mat-card-image img {
-    height: 150px; /* Set a fixed height for the image */
-    object-fit: cover; /* Ensure the image covers the entire space */
-}
-
-mat-card {
-    font-family: "Lato", sans-serif;
-}
-
-mat-card-title {
-    font-size: 14px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-mat-card-subtitle {
-    font-size: 10px;
-}
-
-.buttons {
-    position: fixed;
-    bottom: 20px; /* Adjust this value to set the distance from the bottom */
-    left: 50%;
-    transform: translateX(-50%);
-}
 
 /* Search form */
 .search-form {
@@ -63,30 +17,108 @@ mat-form-field {
     font-size: 12px;
 }
 
-.results-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid #ccc;
-    padding: 10px; /* Add padding to provide space around the text */
-    background-color: pink;
+.events-results-wrapper {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.events-container, .results-container {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
 }
 
 .text {
-    font-family: "Lato", sans-serif; 
-    font-size: 12px; 
+    font-family: "Lato", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
     color: #333;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
 }
 
-@media (max-width: 992px) {
-    .card {
-        flex: 0 0 calc(50% - 20px); /* Two cards per row on smaller screens */
-    }
+select {
+    padding: 8px;
+    font-size: 12px;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
 }
 
-@media (max-width: 768px) {
-    .card {
-        flex: 0 0 calc(100% - 20px); /* One card per row on even smaller screens */
-    }
+.card-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    max-width: 300px;
+    position: relative; /* Add position relative for absolute positioning of hover effect */
+    overflow: hidden; /* Hide overflow to prevent hover effect from showing outside of card */
+}
+
+.card:hover .event-image {
+    opacity: 0.5;
+}
+
+.card:hover {
+    cursor: pointer;
+}
+
+.card-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+mat-card {
+    display: block;
+    border-radius: 0;
+}
+
+
+mat-card-title {
+    font-family: "Lato", sans-serif;
+    font-size: 13px;
+    font-weight: 900;
+    font-style: bold;
+    margin-top: 10px;
+}
+
+mat-card-subtitle {
+    font-family: "Lato", sans-serif;
+    font-size: 11px;
+}
+
+.buttons {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.event-image {
+    width: 100%; /* Make the image fill its container */
+    height: 200px; /* Allow the height to adjust proportionally based on the width */
+    transition: opacity 0.3s ease; /* Smooth transition effect */
+    opacity: 1; /* Initially fully opaque */
+    object-fit: cover;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: space-between; /* Distribute items along the main axis with space between */
+}
+
+.button-container {
+    margin-right: 10px; /* Optional: Add margin to separate button from select */
+}
+
+.select-container {
+    margin-left: auto; /* Push select to the right side by pushing it to the end of available space */
 }

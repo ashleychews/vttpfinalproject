@@ -1,25 +1,29 @@
-<mat-toolbar color="white">
-    <span><img class="img" src="/assets/TIXBUDS.gif"></span>
+<mat-toolbar class="custom-toolbar">
+    <span><img class="img" src="/assets/TixBuds.png"></span>
 
     <span class="header"></span>
 
-    <button mat-button [routerLink]="['/']">Home</button>
-    <button mat-button [routerLink]="['/events']">Events</button>
+    <a class="nav-link" [routerLink]="['/']">Home</a>
+    <a class="nav-link" [routerLink]="['/events']">Events</a>
 
     <ng-container *ngIf="isLoggedIn(); else loggedOutTemplate">
         <!-- Display "My Account" and "Sign Out" options when logged in -->
-        <button mat-button [matMenuTriggerFor]="menu">My Account</button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item [routerLink]="['/profile']">My profile</button>
-            <button mat-menu-item (click)="logout()">Sign Out</button>
-        </mat-menu>
+        <div class="dropdown">
+            <button class="nav-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                My Account
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" [routerLink]="['/profile']">My profile</a>
+                <a class="dropdown-item" (click)="logout()">Sign Out</a>
+            </div>
+        </div>
     </ng-container>
 
     <ng-template #loggedOutTemplate>
         <!-- Display "Sign In/Register" option when logged out -->
-        <button mat-button [routerLink]="['/login']">
+        <a class="nav-link" [routerLink]="['/login']">
             <mat-icon>person_outline</mat-icon>Sign In/Register
-        </button>
+        </a>
     </ng-template>
 </mat-toolbar>
 

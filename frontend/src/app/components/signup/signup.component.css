@@ -1,12 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* SIGN UP FORM */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column; /* Added to stack elements vertically */
+}
+
 mat-card {
-    max-width: 300px;
-    margin: auto;
+    width: 300px;
+    height: 360px;
+    margin-bottom: 20px; /* Added to create space between card and signup link */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: auto; 
 }
   
 mat-card-title {
@@ -20,6 +30,7 @@ mat-card-title {
 mat-card-content {
     display: flex;
     flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
 }
   
 form {
@@ -29,6 +40,7 @@ form {
   
 mat-form-field {
     margin-bottom: 5px;
+    font-family: 'Montserrat', sans-serif;
     font-size: 12px;
 }
   
@@ -41,4 +53,10 @@ button {
     margin-top: 20px;
     font-family: 'Montserrat', sans-serif;
     font-size: 12px;
+}
+
+span {
+    font-size: 12px;
+    text-align: center;
+    color: grey;
 }

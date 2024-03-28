@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="chat-container">
+    <h1 class="h3 mb-3">View Chat</h1>
+    
+    <div *ngFor="let message of messages" class="message-container" [ngClass]="{'self': message.sender === username}">
+      <div class="message" [ngClass]="{'self-message': message.sender === username}">
+        <div class="message-sender">{{ message.sender }}</div>
+        <div class="message-content">{{ message.content }}</div>
+        <div class="message-timestamp">{{ message.timestamp | date: 'mediumTime' }}</div>
+      </div>
+    </div>
+
+    <!-- Form to send messages -->
+    <div class="flex-grow-0 py-3 px-4 border-top">
+      <form [formGroup]="messageForm" (submit)="sendMessage()" class="input-group">
+        <input type="text" formControlName="message" placeholder="Type your message..." />
+        <button type="submit" [disabled]="messageForm.invalid">Send</button>
+      </form>
+    </div>
+  </div>
+</div>
+

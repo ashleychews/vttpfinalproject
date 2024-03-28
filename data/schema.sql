@@ -7,7 +7,6 @@ use tixbuds;
 create table users (
 
     id char(8) not null,
-    username varchar(32) not null,
     email varchar(128) not null,
     password varchar(72) not null,
     
@@ -18,10 +17,14 @@ create table users (
 create table user_profile (
 
     email varchar(128) not null,
+    username varchar(32) not null,
     firstname varchar(50) not null,
     lastname varchar(50) not null,
     birthdate DATE not null,
     phonenumber VARCHAR(20) not null,
+    pic_id char(8) not null,
+    mime varchar(128),
+
     FOREIGN KEY (email) REFERENCES users(email)
 
 );

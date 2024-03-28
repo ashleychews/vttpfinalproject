@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { UserStore } from '../../services/user.store';
@@ -27,8 +27,9 @@ export class CreateProfileComponent implements OnInit{
 
   createProfile() {
     return this.fb.group({
-      firstName: this.fb.control<string>('', [Validators.required]),
-      lastName: this.fb.control<string>('', [Validators.required]),
+      userName: this.fb.control<string>('', [Validators.required, Validators.minLength(3)]),
+      firstName: this.fb.control<string>('', [Validators.required, Validators.minLength(3)]),
+      lastName: this.fb.control<string>('', [Validators.required, Validators.minLength(3)]),
       birthdate: this.fb.control<string>('', [Validators.required]),
       phoneNumber: this.fb.control<string>('', [Validators.required])
     })

@@ -1,44 +1,62 @@
-<div *ngIf="profile" class="profile-card">
-    <mat-card>
-        <mat-card-header class="profile-card-header">Personal Details</mat-card-header>
-        <mat-card-content class="profile-card-content">
-            <ng-container *ngIf="!isEditing; else editMode">
-                <p>First Name: {{ profile.firstname }}</p>
-                <p>Last Name: {{ profile.lastname }}</p>
-                <p>Birth Date: {{ profile.birthdate }}</p>
-                <p>Phone Number: {{ profile.phoneNo }}</p>
-            </ng-container>
-        </mat-card-content>
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center mx-auto" *ngIf="profile">
+    <div class="card" *ngIf="!isEditing; else editMode">
+        <div class="left-content">
+            <div class="image d-flex flex-column justify-content-center align-items-center">
+                <div>
+                    <img *ngIf="imageURL" [src]="imageURL" alt="Profile Picture" class="profile-image" />
+                </div>
+                <span class="name">{{ profile.firstName }} {{ profile.lastName }}</span>
+                <span class="idd">{{ profile.userName | prependAt }}</span>
+                <div class="d-flex mt-2">
+                    <button class="btn1 btn-dark" (click)="toggleEditing()">Edit Profile</button>
+                </div>
+            </div>
+        </div>
+        <div class="right-content">
+            <div class="about-container">
+                <p class="about">About Me</p>
+                <div class="about-info">
+                    <p class="idd1">
+                        <strong>Email:</strong> {{ profile.email }}</p>
+                    <p class="idd1">
+                        <strong>Birth Date:</strong> {{ profile.birthDate }}</p>
+                    <p class="idd1">
+                        <strong>Contact:</strong> {{ profile.phoneNo }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        
-        <ng-template #editMode>
-            <mat-card-content class="profile-card-content">
-                <form [formGroup]="profileForm" (submit)="onSubmit()">
-                    <p>First Name: 
-                        <input matInput placeholder="First Name" formControlName="firstname">
-                    </p>
-                    <p>Last Name: 
-                        <input matInput placeholder="Last Name" formControlName="lastname">
-                    </p>
-                    <p>Birth Date: 
-                        <input matInput placeholder="Birth Date" formControlName="birthdate">
-                    </p>
-                    <p>Phone Number: 
-                        <input matInput placeholder="Phone Number" formControlName="phoneNo">
-                    </p>
-
-                <mat-card-actions>
-                    <button type="submit">Save</button>
-                    <button (click)="toggleEditing()">Cancel</button>
-                </mat-card-actions>
-
-                </form>
-            </mat-card-content>
-        </ng-template>
-
-        <mat-card-actions>
-            <button (click)="toggleEditing()" *ngIf="!isEditing">Edit</button>
-        </mat-card-actions>
-
-    </mat-card>
+    <ng-template #editMode>
+        <div class="edit-form">
+            <form [formGroup]="profileForm" (submit)="onSubmit()">
+                <div class="form-group">
+                    <label for="image">Profile Picture:</label>
+                    <input type="file" id="image" formControlName="image">
+                </div>
+                <div class="form-group">
+                    <label for="userName">Username:</label>
+                    <input type="text" id="userName" formControlName="userName">
+                </div>
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" formControlName="firstName">
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" formControlName="lastName">
+                </div>
+                <div class="form-group">
+                    <label for="birthDate">Birth Date:</label>
+                    <input type="text" id="birthDate" formControlName="birthDate">
+                </div>
+                <div class="form-group">
+                    <label for="phoneNo">Phone Number:</label>
+                    <input type="text" id="phoneNo" formControlName="phoneNo">
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" (click)="toggleEditing()">Cancel</button>
+            </form>
+        </div>
+    </ng-template>
 </div>

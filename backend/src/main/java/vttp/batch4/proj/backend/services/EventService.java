@@ -25,7 +25,6 @@ public class EventService {
     @Value("${ticketmasterapi.key}")
     private String apiKey;
 
-
     //https://app.ticketmaster.com/discovery/v2/events.json?apikey=?
     public List<Event> getAllEvents(int page, int size) {
         String payload;
@@ -116,7 +115,6 @@ public class EventService {
         for (JsonValue value : events) {
             JsonObject event = (JsonObject) value;
             String name = event.getString("name", "");
-            String type = event.getString("type", "");
             String id = event.getString("id", ""); 
 
             String imageUrl = "/resources/static/placeholder.png"; // Default placeholder image
@@ -129,14 +127,13 @@ public class EventService {
 
 
             // Retrieve event dates
-            // Retrieve event dates
             JsonObject dates = event.getJsonObject("dates");
             if (dates != null) {
                 JsonObject start = dates.getJsonObject("start");
                 if (start != null) {
                     String localDate = start.getString("localDate", "");
                     String localTime = start.getString("localTime", "");
-                    eventList.add(new Event(name, type, id, imageUrl, localDate, localTime));
+                    eventList.add(new Event(name, id, imageUrl, localDate, localTime));
                 }
             }
     

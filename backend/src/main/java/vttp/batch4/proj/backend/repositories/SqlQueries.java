@@ -10,13 +10,13 @@ public class SqlQueries {
     """;
 
     public final String SQL_INSERT_NEW_USER = """
-        insert into users (id, username, email, password) 
-        values (?,?,?,?)
+        insert into users (id, email, password) 
+        values (?,?,?)
     """;
 
     public final String SQL_INSERT_USER_PROFILE = """
-        insert into user_profile (email, firstname, lastname, birthdate, phonenumber)
-        values (?, ?, ?, ?, ?)
+        insert into user_profile (email, username, firstname, lastname, birthdate, phonenumber, pic_id, mime)
+        values (?, ?, ?, ?, ?, ?, ? ,?)
     """;
 
     public final String SQL_SELECT_PROFILE_BY_EMAIL = """
@@ -25,10 +25,13 @@ public class SqlQueries {
 
     public final String SQL_UPDATE_PROFILE_BY_EMAIL = """
         update user_profile 
-        set firstname = ?
-        lastname = ?
-        birthdate = ?
-        phonenumber = ?
+        set username = ?,
+            firstname = ?,
+            lastname = ?,
+            birthdate = ?,
+            phonenumber = ?,
+            pic_id = ?,
+            mime = ?
         where email = ?
     """;
     

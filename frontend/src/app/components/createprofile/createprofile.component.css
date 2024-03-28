@@ -34,4 +34,11 @@ mat-card-title {
 mat-form-field {
     margin-bottom: 5px;
     font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+span {
+    font-size: 12px;
+    text-align: center;
+    color: grey;
 }

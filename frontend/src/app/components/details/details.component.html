@@ -1,1 +1,49 @@
-<p>details works!</p>
+<div class="container">
+    <div class="event-container">
+        <div *ngIf="eventDetails" class="event-details">
+
+            <div class="item-left">
+                <div class="event-image-container">
+                    <img [src]="eventDetails[0].imageUrl" alt="Event Image" class="event-image">
+                </div>
+            </div> 
+            <!-- end item-left -->
+    
+            <div class="item-right">
+                <h2 class="title">{{ eventDetails[0].name }}</h2>
+            
+                <div class="sce">
+                    <div class="icon">
+                        <mat-icon>calendar_today</mat-icon>
+                    </div>
+                    <p>{{ eventDetails[0].localDate | date: 'EEE, d MMM y' }}
+                        <br/>{{ formatTime(eventDetails[0].localTime) }}</p>
+                </div>
+
+                <div class="fix">
+                    <a href="{{eventDetails[0].eventUrl}}">
+                        <button mat-button class="learn-more">Learn More</button>
+                    </a>
+                </div>     
+            </div> <!-- end item-right -->
+            
+        </div> <!-- end item -->
+    </div>
+
+    <div class="map-container" *ngIf="mapUrl">
+        <div class="location-details">
+            <div class="loc-icon">
+                <mat-icon>location_on</mat-icon>
+            </div>
+            <div class="location-text">
+                <p>{{ eventDetails[0].venue.name }}</p>
+                <p>{{ eventDetails[0].venue.address }}</p>
+            </div>
+        </div>
+        <iframe [src]="mapUrl" width="400" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
+    </div>
+    
+
+    <a [routerLink]="['/group', eventId]" class="chat-link">View Groups</a>
+
+</div>

@@ -4,14 +4,20 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import vttp.batch4.proj.backend.exceptions.UserException;
 import vttp.batch4.proj.backend.models.User;
 import vttp.batch4.proj.backend.models.UserProfile;
 import vttp.batch4.proj.backend.repositories.UserRepository;
 
+import java.util.logging.Logger;
+
 @Service
 public class UserService {
+
+    // Logger instance
+    private static final Logger logger = Logger.getLogger(UserService.class.getName());
 
     @Autowired
     private UserRepository userRepo;
@@ -21,16 +27,15 @@ public class UserService {
         try {
             Optional<User> opt = userRepo.userExists(user.getEmail());
             if (opt.isEmpty()) {
-                User create = new User(user.getId(), user.getUsername(), user.getEmail(), user.getPassword());
+                User create = new User(user.getId(), user.getEmail(), user.getPassword());
                 userRepo.saveUser(create);
                 return Optional.of(create);
             } else {
-                return Optional.empty(); //user already exists
+                return Optional.empty(); // user already exists
             }
         } catch (Exception ex) {
             throw new UserException(ex.getMessage());
         }
-
     }
 
     public Optional<User> loginUser(String email, String password) throws UserException {
@@ -52,12 +57,16 @@ public class UserService {
         }
     }
 
-    //create user profile
-    public Optional<UserProfile> createUserProfile(UserProfile userProfile) throws UserException {
+    // create user profile
+    @Transactional(rollbackFor = UserException.class)
+    public Optional<UserProfile> createUserProfile(UserProfile userProfile, String pictureId) throws UserException {
         try {
             // Check if the user exists before creating the profile
             Optional<User> existingUser = userRepo.userExists(userProfile.getEmail());
             if (existingUser.isPresent()) {
+                // Set the pictureId obtained from S3
+                userProfile.setPictureId(pictureId);
+
                 // Save the user profile
                 userRepo.saveUserProfile(userProfile);
                 return Optional.of(userProfile);
@@ -67,9 +76,10 @@ public class UserService {
         } catch (Exception ex) {
             throw new UserException("Failed to create user profile: " + ex.getMessage());
         }
+
     }
 
-    //get user profile
+    // get user profile
     public UserProfile getUserProfile(String email) throws UserException {
         try {
             Optional<User> existingUser = userRepo.userExists(email);
@@ -83,20 +93,24 @@ public class UserService {
         }
     }
 
-    //updating user profile
-    public UserProfile updateProfile(UserProfile uprofile) throws UserException {
+    // updating profile
+    @Transactional(rollbackFor = UserException.class)
+    public UserProfile updateUserProfile(UserProfile userProfile) throws UserException {
         try {
-            Optional<User> existingUser = userRepo.userExists(uprofile.getEmail());
+            // Check if the user exists before updating the profile
+            Optional<User> existingUser = userRepo.userExists(userProfile.getEmail());
+
             if (existingUser.isPresent()) {
-                userRepo.updateUserProfile(uprofile);
-                return new UserProfile(uprofile.getEmail(), uprofile.getFirstName(), uprofile.getLastName(), uprofile.getBirthDate(), uprofile.getPhoneNo());
+                userRepo.updateUserProfile(userProfile);
+                // Log success message
+                logger.info("User profile updated successfully for email: " + userProfile.getEmail());
+                return userProfile; // Return the updated profile
             } else {
-                return new UserProfile();
+                throw new UserException("User with email " + userProfile.getEmail() + " does not exist.");
             }
         } catch (Exception ex) {
             throw new UserException("Failed to update user profile: " + ex.getMessage());
         }
     }
 
-    
 }

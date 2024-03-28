@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+.container {
+    display: flex;
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    flex-direction: column; /* Arrange items vertically */
+    margin-top: 20px;
+}
+
+.event-container {
+    width: 70%;
+    margin-bottom: 20px;
+    text-align: center;
+    max-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center horizontally */
+}
+
+
+.event-details {
+    display: flex;
+    border: 1.5px solid #ccc;
+}
+
+.item-left {
+    flex: 1;
+}
+
+.event-image-container {
+    max-width: 360px;
+}
+
+.event-image {
+    width: 100%; /* Set the width to 100% of the container */
+    min-height: 200px; /* Set a minimum height for the image */
+    object-fit: cover; /* Ensure the image covers the entire container */
+}
+
+.item-right {
+    flex: 2;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space items evenly */
+}
+
+.title {
+    font-family: "Lato", sans-serif;
+    font-weight: 900;
+    font-style: bold;
+    font-size: 20px;
+}
+
+.sce {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+    margin-top: 30px;
+}
+
+.sce .icon {
+    margin-right: 10px;
+}
+
+.icon mat-icon {
+    font-size: 24px;
+}
+
+p {
+    font-family: "Lato", sans-serif;
+    font-size: 12px;
+}
+
+.learn-more {
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.learn-more:hover {
+    background-color: #555;
+}
+
+.map-container iframe {
+    width: 350px; /* Set width of the iframe */
+    height: 250px; /* Set height of the iframe */
+    border: 1px solid #ccc; /* Add a border around the iframe */
+    margin-bottom: 10px; /* Add margin below the map */
+}
+
+.chat-link {
+    display: block; /* Display as a block element */
+    text-align: center; /* Center the link horizontally */
+    margin-top: 20px; /* Add margin to separate from the map */
+    text-decoration: none; /* Remove underline */
+    color: #007bff; /* Set link color */
+    font-weight: bold; /* Make the text bold */
+}
+
+.chat-link:hover {
+    text-decoration: underline; /* Underline on hover */
+    color: #0056b3; /* Change link color on hover */
+}
+
+.map-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px; /* Add margin to separate from the event details */
+    width: 80%; /* Adjust width as needed */
+}
+
+.location-details {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Adjust margin as needed */
+    flex-wrap: wrap; /* Allow wrapping */
+}
+
+.location-details .loc-icon {
+    margin-right: 10px; /* Adjust margin as needed */
+}
+
+.location-details p {
+    margin: 0;
+}

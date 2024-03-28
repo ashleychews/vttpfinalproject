@@ -1,14 +1,19 @@
-@import url('https://fonts.googleapis.com/css?family=Work+Sans:400,900,800,500,700,600');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+.custom-toolbar {
+    border: 1px solid #ccc;
+    /* Add a 1px solid border with color #ccc */
+}
 
 .img {
-    height: 80px;
+    height: 70px;
     width: auto;
     margin-top: 5%;
     position: relative;
     z-index: 1;
 }
 
-.mat-toolbar{
+mat-toolbar {
     background-color: white;
     min-height: 80px;
     position: relative;
@@ -18,3 +23,68 @@
 .header {
     flex: 1 1 auto;
 }
+
+.nav-link {
+    text-decoration: none;
+    color: black;
+    letter-spacing: 3px;
+    padding: 5px 15px 10px;
+}
+
+a {
+    font-family: "Raleway", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+mat-icon {
+    vertical-align: middle;
+    /* Align the icon vertically with the text */
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 120px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-menu a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.nav-link.dropdown-toggle {
+    font-family: "Raleway", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+
+.nav-link.dropdown-toggle::after {
+    content: "";
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid black;
+    margin-left: 5px;
+}
+

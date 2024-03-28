@@ -25,8 +25,6 @@ export class SignupComponent {
 
   register(): FormGroup {
     return this.fb.group({
-
-      username: this.fb.control<string>('', [Validators.required, Validators.minLength(3)]),
       email:this.fb.control<string>('', [Validators.required, Validators.email]),
       password: this.fb.control<string>('', [Validators.required, Validators.minLength(8), this.validatePasswordStrength])
 

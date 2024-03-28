@@ -1,0 +1,40 @@
+<div class="container">
+    <p class="header">Discover Groups</p>
+
+    <!-- Button to toggle the create group form -->
+    <button (click)="toggleCreateForm()">Create New Group</button>
+
+    <!-- Create Group Form -->
+    <div *ngIf="showCreateForm">
+        <h2>Create Group</h2>
+        <form [formGroup]="createform" (submit)="createAndJoinGroup()">
+            <div>
+                <label for="groupName">Group Name</label>
+                <input type="text" id="groupName" formControlName="groupName" required>
+            </div>
+            <button type="submit">Create Group</button>
+        </form>
+    </div>
+
+    <div class="card list">
+        <div *ngIf="groups$ | async as groups; else NoGroups">
+            <div *ngFor="let group of groups">
+                <p class="group-name">{{ group.groupName }}</p>
+                <div>
+                    <p><mat-icon>person</mat-icon>{{group.userCount}}</p>
+                </div>
+
+                <div>
+                    <p><mat-icon>date_range</mat-icon>{{ group.timestamp | date: 'medium' }}</p>
+                </div>
+                <button (click)="joinGroup(group.groupId)">Join Group</button>
+            </div>
+        </div>
+    </div>
+    
+    <ng-template #NoGroups>
+        <p>No groups created yet</p>
+    </ng-template>
+
+</div>
+

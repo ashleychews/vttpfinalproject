@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class Event {
 
     private String name;
-    private String type;
     private String id;
     private String imageUrl;
     private String localDate;

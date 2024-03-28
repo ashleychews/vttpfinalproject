@@ -4,7 +4,7 @@ import { EventService } from '../../services/event.service';
 import { Observable } from 'rxjs';
 import { Events } from '../../models';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-event',
@@ -14,25 +14,33 @@ import { Router } from '@angular/router';
 export class EventComponent implements OnInit {
 
   selected: string = ''
-  countries!: { name: string, code: string}[]
+  countries!: { name: string, code: string }[]
 
   events$!: Observable<Events[]>
   searchForm!: FormGroup
-  private fb =  inject(FormBuilder)
+  private fb = inject(FormBuilder)
 
-  page=0
-  size=20
+  page = 0
+  size = 20
   hasNextPage = true
   hasPreviousPage = false
   lastPage: number = 0
 
   private eventSvc = inject(EventService)
   private router = inject(Router)
+  private route = inject(ActivatedRoute)
 
   ngOnInit(): void {
     this.getCountries()
     this.loadEvents()
-    this.loadLastPageNumber() 
+    this.loadLastPageNumber()
+
+    this.route.queryParams.subscribe(params => {
+      // Set page from query parameter if available
+      this.page = params['page'] ? +params['page'] : 0
+      // Load events with the updated page
+      this.loadEvents()
+    })
 
     this.searchForm = this.fb.group({
       keyword: this.fb.control<string>('')
@@ -43,11 +51,11 @@ export class EventComponent implements OnInit {
     this.countries = Object.entries(COUNTRY_LIST).map(([name, code]) => ({
       name,
       code
-    }));
+    }))
   }
 
   onCountrySelect(event: any): void {
-    const countryCode = this.getCountryCodeByName(event.target.value);
+    const countryCode = this.getCountryCodeByName(event.target.value)
     if (countryCode) {
       this.selected = countryCode
       this.page = 0 // Reset page number when country changes
@@ -58,7 +66,7 @@ export class EventComponent implements OnInit {
 
   private getCountryCodeByName(countryName: string): string | undefined {
     const country = this.countries.find(country => country.name === countryName)
-    return country ? country.code: undefined
+    return country ? country.code : undefined
   }
 
   loadEvents(): void {
@@ -74,6 +82,7 @@ export class EventComponent implements OnInit {
   }
 
   loadAllEvents(): void {
+    this.selected = ''; // Reset selected country
     this.events$ = this.eventSvc.getAllEvents(this.page, this.size);
     this.events$.subscribe(events => {
       // Disable next button if there are no events
@@ -84,50 +93,51 @@ export class EventComponent implements OnInit {
   loadNextPage(): void {
     if (this.hasNextPage) {
       this.page++;
-      console.log('Next page:', this.page)
-      this.loadEvents()
-      this.loadLastPageNumber()
-      // Disable next button if current page is equal to the last page
-      this.hasNextPage = this.page < this.lastPage
-      // Enable previous button as we are going to the next page
-      this.hasPreviousPage = true;
+      this.navigateToPage(this.page)
+      // Set hasPreviousPage to true when navigating to the next page
+      this.hasPreviousPage = true
+    }
+  }
+  
+  loadPreviousPage(): void {
+    if (this.page > 0) {
+      this.page--;
+      this.navigateToPage(this.page)
     }
   }
 
-  loadPreviousPage(): void {
-    if (this.page > 0) {
-      this.page--
-      console.log('Previous page:', this.page)
-      this.loadEvents()
-      // Enable next button when navigating back
-      this.hasNextPage = true
-      // Disable previous button if current page is 0
-      this.hasPreviousPage = this.page > 0;
-    }
+  navigateToPage(page: number): void {
+    this.router.navigate(['/events', page], 
+    {queryParams: { page: page }})
   }
 
   loadLastPageNumber(): void {
     this.eventSvc.getLastPage(this.selected)
-      .subscribe((lastPageNumber:number) => {
-          this.lastPage = lastPageNumber;
-          console.log('Last page number:', this.lastPage)
-          // Disable next button if current page is equal to the last page
-          this.hasNextPage = !(this.page === 0 && this.lastPage === 1)
-          // Disable previous button if current page is 0
-          this.hasPreviousPage = this.page > 0
+      .subscribe((lastPageNumber: number) => {
+        this.lastPage = lastPageNumber;
+        console.log('Last page number:', this.lastPage)
+        // Disable next button if current page is equal to the last page
+        this.hasNextPage = !(this.page === 0 && this.lastPage === 1)
+        // Disable previous button if current page is 0
+        this.hasPreviousPage = this.page > 0
 
-        }),
-        ((error:any) => {
-          console.error('Error loading last page number:', error)
-        }
+      }),
+      ((error: any) => {
+        console.error('Error loading last page number:', error)
+      }
       )
   }
 
-  onSearch(): void{
+  onSearch(): void {
     const keyword = this.searchForm.get('keyword')?.value
     console.log("keyword", keyword)
     // Redirect to the SearchComponent with the keyword as a query parameter
     this.router.navigate(['/search', keyword])
+  }
+
+  onEventClick(eventId: string): void {
+    // Navigate to the event details page with the event ID as a route parameter
+    this.router.navigate(['/event-details', eventId])
   }
 
   formatTime(time: string): string {
@@ -137,5 +147,9 @@ export class EventComponent implements OnInit {
     return `${formattedHours}:${minutes < 10 ? '0' + minutes : minutes} ${amPm}`
   }
 
+  getCountryNameByCode(code: string): string {
+    const country = this.countries.find(c => c.code === code)
+    return country ? country.name : ''
+  }
 
 }

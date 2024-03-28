@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ComponentStore } from "@ngrx/component-store";
-import { User, UserSlice } from "../models";
+import { UserSlice } from "../models";
 
 const INIT_STORE: UserSlice = {
     email: ''

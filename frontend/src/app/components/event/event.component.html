@@ -8,30 +8,57 @@
     </mat-form-field>
 </form>
 
-<select (change)="onCountrySelect($event)">
-    <option value="" disabled>Select a country</option>
-    <option *ngFor="let country of countries" [value]="country.name">
-        <img [src]="'/assets/flags/' + country.code + '.png'" class="flag-icon"> {{ country.name }}
-    </option>
-</select>
+<div class="container mt-4" *ngIf="events$ | async as events">
+    <div class="row">
+        <div class="col-12">
+            <div class="events-results-wrapper">
+                <div *ngIf="events.length > 0" class="events-container">
+                    <div class="text">{{ selected ? 'Events in ' + getCountryNameByCode(selected) : 'All Events' }}
+                      <img *ngIf="selected" src="/assets/flags/{{selected}}.png" class="flag-icon">
+                    </div>
+                </div>
+                <div *ngIf="events.length <= 0 && selected" class="results-container">
+                    <div class="text">Currently no events in {{ getCountryNameByCode(selected) }}
+                        <img src="/assets/flags/{{selected}}.png" class="flag-icon">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<div class="card-container" *ngIf="events$ | async as events">
-    <div *ngIf="events.length>0" class="card-wrapper">
-        <mat-card *ngFor="let event of events" class="card">
-            <img mat-card-image [src]="event.imageUrl">
-            <mat-card-content>
-                <mat-card-title>{{ event.name }}</mat-card-title>
-                <mat-card-subtitle>{{event.localDate | date: 'EEE, d MMM y' }} ({{ formatTime(event.localTime) }})</mat-card-subtitle>
-            </mat-card-content>
-        </mat-card>
-    </div>
+        <div class="wrapper">
+            <div class="button-container">
+                <button mat-raised-button class="all-event"  (click)="loadAllEvents()">All</button>
+            </div>
+            <div class="select-container">
+                <select (change)="onCountrySelect($event)">
+                    <option value="">Select a country</option>
+                    <option *ngFor="let country of countries" [value]="country.name">
+                        {{ country.name }}
+                    </option>
+                </select>
+            </div>
+        </div>
 
-    <div *ngIf="events.length <= 0" class="results-container">
-        <div class="text">No Events currently</div>
+        <div class="col-12 col-md-4 mb-4" *ngFor="let event of events">
+            <mat-card class="card" (click)="onEventClick(event.id)">
+                <img mat-card-image class="event-image" [src]="event.imageUrl">
+                <mat-card-content>
+                    <mat-card-title>{{ event.name }}</mat-card-title>
+                    <mat-card-subtitle>{{event.localDate | date: 'EEE, d MMM y' }} ({{ formatTime(event.localTime)
+                        }})</mat-card-subtitle>
+                </mat-card-content>
+            </mat-card>
+        </div>
     </div>
 </div>
 
-<div class="buttons">
-    <button mat-button (click)="loadPreviousPage()" [disabled]="!hasPreviousPage">Previous</button>
-    <button mat-button (click)="loadNextPage()" [disabled]="!hasNextPage">Next</button>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="buttons">
+                <button mat-button (click)="loadPreviousPage()" [disabled]="!hasPreviousPage">Previous</button>
+                <button mat-button (click)="loadNextPage()" [disabled]="!hasNextPage">Next</button>
+            </div>
+        </div>
+    </div>
 </div>

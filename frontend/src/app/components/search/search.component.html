@@ -8,9 +8,6 @@
             <img mat-card-image [src]="event.imageUrl">  
             <mat-card-title>{{ event.name }}</mat-card-title>
             <mat-card-subtitle>{{event.localDate | date: 'EEE, d MMM y' }} ({{ formatTime(event.localTime) }})</mat-card-subtitle>
-            <mat-chip-set>
-                <mat-chip color="primary">{{ event.type }}</mat-chip>
-            </mat-chip-set>
         </mat-card>
     </div>
 
