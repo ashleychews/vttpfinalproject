@@ -4,7 +4,7 @@
     
     <div *ngFor="let message of messages" class="message-container" [ngClass]="{'self': message.sender === username}">
       <div class="message" [ngClass]="{'self-message': message.sender === username}">
-        <div class="message-sender">{{ message.sender }}</div>
+        <div class="message-sender"> {{ message.sender }}</div>
         <div class="message-content">{{ message.content }}</div>
         <div class="message-timestamp">{{ message.timestamp | date: 'mediumTime' }}</div>
       </div>

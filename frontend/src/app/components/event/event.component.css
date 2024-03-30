@@ -55,11 +55,10 @@ select {
 }
 
 .card {
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Set bottom margin for spacing between cards */
     border: 1px solid #ccc;
-    max-width: 300px;
-    position: relative; /* Add position relative for absolute positioning of hover effect */
-    overflow: hidden; /* Hide overflow to prevent hover effect from showing outside of card */
+    flex-basis: calc(33.33% - 20px); /* Set the width for each card with margin */
+    box-sizing: border-box; /* Ensure margin is included in the width calculation */
 }
 
 .card:hover .event-image {
@@ -71,14 +70,16 @@ select {
 }
 
 .card-wrapper {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between; /* Distribute items along the main axis with space between */
 }
 
 mat-card {
     display: block;
     border-radius: 0;
+    max-width: 100%; /* Ensure card content does not overflow */
 }
 
 
@@ -112,6 +113,7 @@ mat-card-subtitle {
 
 .wrapper {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between; /* Distribute items along the main axis with space between */
 }
 

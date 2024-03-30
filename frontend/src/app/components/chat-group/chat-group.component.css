@@ -13,4 +13,69 @@
     font-weight: 900;
     font-style: bold;
     font-size: 14px;
+    color: #20247b;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.create-group-card {
+    width: 50%; 
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px; /* Adjust margin-top to create space between the button and the form */
+}
+
+.create-group-card h2 {
+    font-family: "Lato", sans-serif;
+    font-weight: 900;
+    font-style: bold;
+    font-size: 20px;
+    margin-top: 0; /* Remove default margin */
+}
+
+.create-group-card form {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-group-card form div {
+    margin-bottom: 10px;
+}
+
+.create-group-card form label {
+    margin-bottom: 5px;
+}
+
+.card-list {
+    width: 70%;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 20px; /* Add padding */
+}
+
+span {
+    font-family: "Lato", sans-serif;
+    font-size: 14px;
+    color: #888;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: row; /* Set to row to display items horizontally */
+    align-items: center;
+}
+
+.icon {
+    margin-right: 2px;
+    vertical-align: middle;
+}
+
+.info-container {
+    margin-right: 10px;
 }

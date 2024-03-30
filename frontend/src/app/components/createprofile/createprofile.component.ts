@@ -42,9 +42,9 @@ export class CreateProfileComponent implements OnInit{
         .then(() => {
           console.log('Profile setup successful')
           alert('Profile setup successful')
+          this.userSvc.isLoggedIn()
           // Redirect to dashboard
-          this.router.navigate(['/events'])
-          this.userSvc.isLoggedIn
+          this.router.navigate(['/profile'])
         })
         .catch(error => {
           console.error('Error setting up profile:', error)

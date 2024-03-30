@@ -14,7 +14,7 @@
             <div class="events-results-wrapper">
                 <div *ngIf="events.length > 0" class="events-container">
                     <div class="text">{{ selected ? 'Events in ' + getCountryNameByCode(selected) : 'All Events' }}
-                      <img *ngIf="selected" src="/assets/flags/{{selected}}.png" class="flag-icon">
+                        <img *ngIf="selected" src="/assets/flags/{{selected}}.png" class="flag-icon">
                     </div>
                 </div>
                 <div *ngIf="events.length <= 0 && selected" class="results-container">
@@ -27,7 +27,7 @@
 
         <div class="wrapper">
             <div class="button-container">
-                <button mat-raised-button class="all-event"  (click)="loadAllEvents()">All</button>
+                <button mat-raised-button class="all-event" (click)="loadAllEvents()">All</button>
             </div>
             <div class="select-container">
                 <select (change)="onCountrySelect($event)">
@@ -38,6 +38,7 @@
                 </select>
             </div>
         </div>
+
 
         <div class="col-12 col-md-4 mb-4" *ngFor="let event of events">
             <mat-card class="card" (click)="onEventClick(event.id)">
@@ -52,6 +53,7 @@
     </div>
 </div>
 
+<!-- Pagination buttons -->
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">
