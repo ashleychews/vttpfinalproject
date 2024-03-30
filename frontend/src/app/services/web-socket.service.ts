@@ -14,7 +14,6 @@ export class WebSocketService {
   connectToChat(eventId: string, groupId: string, onMessageCallback: (message: Message) => void) {
     if (this.connected) {
       console.log('WebSocket already connected')
-      return
     }
 
     console.log('Connecting to WebSocket')
