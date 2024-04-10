@@ -2,7 +2,6 @@ package vttp.batch4.proj.backend.models;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.bson.Document;
 
 import lombok.AllArgsConstructor;
@@ -21,10 +20,11 @@ public class ChatGroup {
     private String groupId;
     private String groupName;
     private String creator;
-    private List<String> users; //list of users in group
-    private int messageCount; // number of messages in the group
+    private List<String> users; //list of users in group - by email
     private int userCount;
     private LocalDateTime timestamp;
+    private String pictureId;
+    private String mediaType;
     
     public Document toDocument() {
 		Document doc = new Document();
@@ -33,9 +33,10 @@ public class ChatGroup {
 		doc.put("groupName", groupName);
         doc.put("creator", creator);
         doc.put("users", users);
-        doc.put("messageCount", messageCount);
         doc.put("userCount", userCount);
         doc.put("timestamp", timestamp);
+        doc.put("pictureId", pictureId);
+        doc.put("mediaType", mediaType);
 		return doc;
 	}
 

@@ -113,4 +113,22 @@ public class UserService {
         }
     }
 
+    public Optional<String> getUserIdByEmail(String email) throws UserException {
+        try {
+            return userRepo.getUserIdByEmail(email);
+        } catch (Exception ex) {
+            throw new UserException("Failed to get user ID by email: " + ex.getMessage());
+        }
+    }
+
+    public String getEmailByUserId(String userId) throws UserException {
+        try {
+            return userRepo.getEmailByUserId(userId);
+        } catch (Exception ex) {
+            throw new UserException("Failed to get Email by userId: " + ex.getMessage());
+        }
+    }
+
+
+
 }

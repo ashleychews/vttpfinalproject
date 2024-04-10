@@ -18,8 +18,8 @@ export class WebSocketService {
 
     console.log('Connecting to WebSocket')
 
-    const websocketURL = 'http://localhost:8080/chat'
-    const sockJS = new SockJS(websocketURL);
+    const websocketURL = `http://localhost:8080/chat`
+    const sockJS = new SockJS(websocketURL)
 
     this.stompClient = new Client({
       webSocketFactory: () => sockJS,

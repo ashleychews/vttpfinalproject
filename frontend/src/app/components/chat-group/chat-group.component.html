@@ -1,43 +1,48 @@
-<div class="container">
-    <p class="header">Discover Groups</p>
+<div class="container-fluid">
+    <h1 class="header-discover">Discover Groups</h1>
+    <div *ngIf="groups$ | async as groups" class="container">
+        <div *ngIf="groups.length > 0" class="row">
+            <div *ngFor="let group of groups" class="col-12 col-md-4 mb-4">
+                <!-- Event Image Container -->
+                <div class="card" *ngIf="eventDetails[group.eventId]">
+                    <div class="event-container">
+                        <div class="event-content">
+                            <img [src]="eventDetails[group.eventId].imageUrl" alt="Event Image" class="event-img">
+                            <div class="date-container">
+                                <span class="month">{{ eventDetails[group.eventId].localDate | date: 'MMM' }}</span>
+                                <span class="day">{{ eventDetails[group.eventId].localDate | date: 'd' }}</span>
+                            </div>
+                        </div>
 
-    <!-- Button to toggle the create group form -->
-    <button mat-raised-button (click)="toggleCreateForm()">Create New Group</button>
-
-    <!-- Create Group Form -->
-    <div *ngIf="showCreateForm" class="create-group-card">
-        <h2>Create Group</h2>
-        <form [formGroup]="createform" (submit)="createAndJoinGroup()">
-            <div>
-                <label for="groupName">Group Name</label>
-                <input type="text" id="groupName" formControlName="groupName" required>
-            </div>
-            <button mat-raised-button type="submit">Create Group</button>
-        </form>
-    </div>
-    
-    <div class="card-list">
-        <div *ngIf="groups$ | async as groups; else NoGroups">
-            <div *ngFor="let group of groups">
-                <p class="group-name">{{ group.groupName }}</p>
-                <div class="info-container">
-                    <div>
-                        <mat-icon class="icon">person</mat-icon>
-                        <span>{{group.userCount}}</span>
+                        <div class="eve-info">
+                            <span class="name">{{eventDetails[group.eventId].name}}</span>
+                            <div class="venue-info">
+                                <mat-icon class="loc-icon">location_on</mat-icon>
+                                <span class="place">{{ eventDetails[group.eventId].venue.name }}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <mat-icon class="icon">date_range</mat-icon>
-                        <span>created: {{ group.timestamp | date: 'dd MMM yyyy' }}</span>
+
+                    <!-- Group Details Container -->
+                    <div class="group-details">
+                        <div class="group-image">
+                            <img *ngIf="imageURLs[group.pictureId]" [src]="imageURLs[group.pictureId]" alt="Group Image"
+                                class="group-image">
+                        </div>
+                        <div class="group-info">
+                            <h3 class="group-name">{{ group.groupName }}</h3>
+                        </div>
+                        <div class="btns">
+                            <button class="btn" (click)="joinGroup(group.groupId, group.eventId)">
+                                join group </button>
+                        </div>
+
                     </div>
                 </div>
-                <button mat-raised-button (click)="joinGroup(group.groupId)">Join Group</button>
             </div>
         </div>
+        <div *ngIf="groups.length === 0">
+            <p>No groups found.</p>
+        </div>
     </div>
-    
-    <ng-template #NoGroups>
-        <p>No groups created yet</p>
-    </ng-template>
-
 </div>
-

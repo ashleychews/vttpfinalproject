@@ -26,6 +26,14 @@ import { ChatComponent } from './components/chat/chat.component';
 import { ChatService } from './services/chat.service';
 import { PrependAtPipe } from './pipes/prepend-at.pipe';
 import { ChatGroupComponent } from './components/chat-group/chat-group.component';
+import { HideSelfNamePipe } from './pipes/hide-self-name.pipe';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './components/authentication/auth.effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { authReducer } from './components/authentication/auth.reducer';
+import { StoreModule } from '@ngrx/store';
+import { UserWebSocketService } from './services/user-web-socket.service';
+import { UserchatComponent } from './components/userchat/userchat.component';
 
 @NgModule({
   declarations: [
@@ -41,14 +49,18 @@ import { ChatGroupComponent } from './components/chat-group/chat-group.component
     ProfileComponent,
     ChatComponent,
     PrependAtPipe,
-    ChatGroupComponent
+    ChatGroupComponent, 
+    HideSelfNamePipe, UserchatComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MaterialModule
+    MaterialModule,
+    EffectsModule.forRoot([AuthEffects]),
+    StoreModule.forRoot({ auth: authReducer }),
+    StoreDevtoolsModule.instrument({}),
   ],
   providers: [
     provideAnimationsAsync(),
@@ -59,7 +71,9 @@ import { ChatGroupComponent } from './components/chat-group/chat-group.component
     AuthGuard,
     WebSocketService,
     ChatService,
-    PrependAtPipe
+    PrependAtPipe,
+    HideSelfNamePipe,
+    UserWebSocketService
   ],
   bootstrap: [AppComponent]
 })

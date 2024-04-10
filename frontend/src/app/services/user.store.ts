@@ -6,7 +6,6 @@ const INIT_STORE: UserSlice = {
     email: ''
 }
 
-
 @Injectable()
 export class UserStore extends ComponentStore<UserSlice> {
 

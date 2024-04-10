@@ -22,6 +22,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/chat")
                 .setAllowedOrigins("http://localhost:4200")
                 .withSockJS();
+
+        // Register the endpoint for single user WebSocket
+        registry.addEndpoint("/single-chat")
+                .setAllowedOrigins("http://localhost:4200")
+                .withSockJS();
     }
-    
+
 }

@@ -14,8 +14,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatChipsModule} from '@angular/material/chips';
-
-
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [],
@@ -34,7 +35,10 @@ import {MatChipsModule} from '@angular/material/chips';
     MatCheckboxModule,
     MatSlideToggleModule,
     MatToolbarModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDialogModule,
+    MatTooltipModule,
+    MatSnackBarModule
   ],
   exports: [
     CommonModule,
@@ -51,7 +55,10 @@ import {MatChipsModule} from '@angular/material/chips';
     MatCheckboxModule,
     MatSlideToggleModule,
     MatToolbarModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDialogModule,
+    MatTooltipModule,
+    MatSnackBarModule
   ]
 })
 

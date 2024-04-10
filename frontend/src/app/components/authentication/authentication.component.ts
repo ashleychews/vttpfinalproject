@@ -1,6 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { UserService } from '../../services/user.service';
-import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AppState } from './app.state';
+import { isLoggedIn } from './auth.selectors';
+import { logout } from './auth.actions';
 
 @Component({
   selector: 'app-authentication',
@@ -9,16 +12,16 @@ import { Router } from '@angular/router';
 })
 export class AuthenticationComponent {
 
-  private userSvc = inject(UserService)
-  private router = inject(Router)
+  isLoggedIn$!: Observable<boolean>
 
-  isLoggedIn(): boolean {
-    return this.userSvc.isLoggedIn()
+  private store = inject(Store<AppState>)
+
+  ngOnInit(): void {
+    this.isLoggedIn$ = this.store.select(isLoggedIn)
   }
 
   logout(): void {
-    this.userSvc.logout()
-    this.router.navigate(['/login']); // Redirect to login page
+    this.store.dispatch(logout())
   }
 
 }

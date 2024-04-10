@@ -2,19 +2,31 @@
     <div class="text">Search results for: {{ keyword }}</div>
 </div>
 
-<div class="card-container" *ngIf="searchResults$ | async as searchResults">
-    <div *ngIf="searchResults.length > 0;" class="card-wrapper">
-        <mat-card *ngFor="let event of searchResults" class="card">
-            <img mat-card-image [src]="event.imageUrl">  
-            <mat-card-title>{{ event.name }}</mat-card-title>
-            <mat-card-subtitle>{{event.localDate | date: 'EEE, d MMM y' }} ({{ formatTime(event.localTime) }})</mat-card-subtitle>
-        </mat-card>
-    </div>
+<div class="container mt-4" *ngIf="searchResults$ | async as searchResults">
+    <div class="row">
+        <div *ngIf="searchResults.length > 0;" class="col-12">
 
-    <div *ngIf="searchResults.length <= 0" class="results-container">
-        <div class="text">No Events currently</div>
-    </div>
+            <div class="row">
+                <div class="col-12 col-md-4 mb-4" *ngFor="let event of searchResults">
+                    <mat-card class="card" (click)="onEventClick(event.id)">
+                        <img mat-card-image [src]="event.imageUrl" class="event-image">
 
+                        <mat-card-content>
+                            <div class="date">
+                                <span class="month">{{ event.localDate | date: 'MMM' }}</span>
+                                <span class="day">{{ event.localDate | date: 'd' }}</span>
+                            </div>
+                            <div class="event-name">{{ event.name }}</div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+
+                <div *ngIf="searchResults.length <= 0" class="results-container">
+                    <div class="text">No Events currently</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="buttons">

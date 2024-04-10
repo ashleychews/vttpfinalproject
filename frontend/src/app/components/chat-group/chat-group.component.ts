@@ -1,10 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ChatGroup } from '../../models';
+import { ChatGroup, EventDetails } from '../../models';
 import { ChatService } from '../../services/chat.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import { HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { EventService } from '../../services/event.service';
+import { Router } from '@angular/router';
 import { UserStore } from '../../services/user.store';
-import { Observable, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-chat-group',
@@ -13,34 +15,24 @@ import { Observable, switchMap } from 'rxjs';
 })
 export class ChatGroupComponent implements OnInit {
 
-  private ChatGroupSvc = inject(ChatService)
-  private route = inject(ActivatedRoute)
+  groups$!: Observable<ChatGroup[]>
+  imageURLs: { [key: string]: string } = {}
+  eventDetails: { [key: string]: EventDetails } = {}
+  email!: string
+
+  private chatSvc = inject(ChatService)
+  private userSvc = inject(UserService)
+  private eventSvc = inject(EventService)
   private userStore = inject(UserStore)
-  private fb = inject(FormBuilder)
   private router = inject(Router)
 
-  createform!: FormGroup
-  eventId!: string;
-  groups$!: Observable<ChatGroup[]>
-  email!: string
-  showCreateForm: boolean = false
-
   ngOnInit(): void {
-    console.log('Initializing Chat Group Component')
-
-    this.createform = this.createGroup()
-
-    this.route.params.subscribe(params => {
-      this.eventId = params['eventId']
-      console.log('Event ID:', this.eventId)
-    })
-
-    this.loadChatGroups()
+    this.loadAllGroups()
 
     // Subscribe to getEmail once and store the email value
     this.userStore.getEmail.subscribe({
       next: (email: string) => {
-        this.email = email;
+        this.email = email
         console.log('Email:', email)
       },
       error: (error: any) => {
@@ -49,62 +41,63 @@ export class ChatGroupComponent implements OnInit {
     })
   }
 
-  loadChatGroups() {
-    console.log('Loading chat groups...');
-    this.groups$ = this.route.params.pipe(
-      switchMap(params => this.ChatGroupSvc.getChatGroups(params['eventId']))
+  loadAllGroups(): void {
+    this.groups$ = this.chatSvc.getAllGroups()
+
+    this.groups$
+      .subscribe(groups => {
+        groups.forEach(group => {
+          this.getImage(group.pictureId)
+          this.getEventDetails(group.eventId)
+        })
+      })
+  }
+
+  getImage(id: string): void {
+    this.userSvc.getImage(id)
+      .subscribe((response: HttpResponse<Blob>) => {
+        if (response.body) {
+          const reader = new FileReader()
+          reader.onload = () => {
+            this.imageURLs[id] = reader.result as string;
+          }
+          reader.readAsDataURL(response.body)
+        } else {
+          console.error('Error: Response body is null')
+        }
+      },
+        (error) => {
+          console.error('Error fetching image:', error)
+        }
+      )
+  }
+
+  getEventDetails(eventId: string): void {
+    this.eventSvc.getEventDetails(eventId).subscribe(
+      (data: EventDetails[]) => {
+        if (data && data.length > 0) {
+          // Assuming event details array has only one item for simplicity
+          this.eventDetails[eventId] = data[0];
+        } else {
+          console.error('Error: No event details found');
+        }
+      },
+      error => {
+        console.error('Error fetching event details:', error);
+      }
     )
   }
 
-  createGroup(): FormGroup {
-    console.log('Creating group form')
-    return this.fb.group({
-      groupName: this.fb.control<string>('', [Validators.required, Validators.minLength(3)])
-    })
-  }
-
-  createAndJoinGroup() {
-    console.log('creating and joining group')
-    if (this.createform.valid) {
-      const groupName = this.createform.value.groupName;
-      const chatgroup: ChatGroup = {
-        groupId: '',
-        eventId: this.eventId,
-        groupName: groupName,
-        creator: this.email,
-        users: [], // Initialize the users array with an empty array
-        messageCount: 0,
-        userCount: 0,
-        timestamp: new Date() // Set timestamp to current date and time
-      };
-      this.ChatGroupSvc.createChatGroup(chatgroup).subscribe(createdGroup => {
-        const groupId = createdGroup.groupId //get group id from backend
-        const userCount = createdGroup.userCount //get userCount from backend
-        console.log('group created:', groupId)
-        console.log('user count', userCount)
-    
-        // Join the group
-        this.joinGroup(groupId);
-      })
-    }
-  }
-
-  joinGroup(groupId: string) {
+  joinGroup(groupId: string, eventId: string) {
     console.log('Joining group with ID:', groupId)
     if (!this.email) {
       console.error('Email is not available.')
-      return
+      return;
     }
 
-    this.ChatGroupSvc.joinGroup(groupId, this.email).subscribe(() => {
-      // Route to chat component after joining
-      this.router.navigate(['/chat', this.eventId, groupId])
+    this.chatSvc.joinGroup(groupId, this.email).subscribe(() => {
+      // Route to chat component after joining, passing both event ID and group ID
+      this.router.navigate(['/chat', eventId, groupId])
     })
   }
-
-  toggleCreateForm(){
-    this.showCreateForm = !this.showCreateForm
-  }
-
-
 }

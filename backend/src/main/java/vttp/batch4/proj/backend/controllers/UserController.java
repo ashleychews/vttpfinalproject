@@ -106,7 +106,7 @@ public class UserController {
             throws InterruptedException, UserException {
         try {
             // Generate a random seed
-            String seed = String.valueOf(new Random().nextInt());
+            String seed = String.valueOf(new Random().nextInt(100));
 
             // Generate a random image URL using an external API
             String imageUrl = "https://api.dicebear.com/8.x/avataaars-neutral/svg?seed=" + seed;
@@ -127,6 +127,7 @@ public class UserController {
             userP.setBirthDate(json.getString("birthdate"));
             userP.setPhoneNo(json.getString("phoneNumber"));
             userP.setEmail(json.getString("email"));
+            userP.setCountry(json.getString("country")); 
             userP.setPictureId(imageId);
             userP.setMediaType(contentType);
 
@@ -164,7 +165,7 @@ public class UserController {
     public ResponseEntity<String> updateUserProfile(@RequestPart(required = false) MultipartFile image,
             @RequestPart String email, @RequestPart String userName, @RequestPart String firstName,
             @RequestPart String lastName, @RequestPart String birthDate,
-            @RequestPart String phoneNo) {
+            @RequestPart String phoneNo, @RequestPart String joinedDate, @RequestPart String country) {
         try {
             UserProfile updatedProfile = new UserProfile();
 
@@ -184,6 +185,8 @@ public class UserController {
             updatedProfile.setLastName(lastName);
             updatedProfile.setBirthDate(birthDate);
             updatedProfile.setPhoneNo(phoneNo);
+            updatedProfile.setJoinedDate(joinedDate);
+            updatedProfile.setCountry(country);
             updatedProfile.setEmail(email);
 
             System.out.println(updatedProfile);
@@ -199,6 +202,8 @@ public class UserController {
                     .add("birthDate", updatedUserProfile.getBirthDate())
                     .add("phoneNo", updatedUserProfile.getPhoneNo())
                     .add("pictureId", updatedProfile.getPictureId())
+                    .add("country", updatedUserProfile.getCountry())
+                    .add("joinedDate", updatedUserProfile.getJoinedDate())
                     .build();
             return ResponseEntity.ok().body(updatedProfileJson.toString());
 

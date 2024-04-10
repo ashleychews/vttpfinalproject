@@ -1,22 +1,164 @@
 <div class="container">
-  <div class="chat-container">
-    <h1 class="h3 mb-3">View Chat</h1>
-    
-    <div *ngFor="let message of messages" class="message-container" [ngClass]="{'self': message.sender === username}">
-      <div class="message" [ngClass]="{'self-message': message.sender === username}">
-        <div class="message-sender"> {{ message.sender }}</div>
-        <div class="message-content">{{ message.content }}</div>
-        <div class="message-timestamp">{{ message.timestamp | date: 'mediumTime' }}</div>
+
+  <div class="chat-and-info-container">
+
+    <div class="go-back-container">
+      <button mat-raised-button (click)="goBackToGroup()"><mat-icon>arrow_back</mat-icon></button>
+    </div>
+
+    <div class="chat-container">
+
+      <!-- Form to send messages -->
+      <div class="form-container">
+        <form [formGroup]="messageForm" (submit)="sendMessage()" class="input-group">
+          <div class="input-wrapper">
+            <input type="text" formControlName="message" placeholder="Your message..." />
+            <mat-icon class="send-icon" (click)="sendMessage()" [ngClass]="{ 'disabled': disabled }"
+              [matTooltip]="'Send Message'">send</mat-icon>
+          </div>
+        </form>
+      </div>
+
+
+      <!-- Display Group Name -->
+      <div *ngIf="group" class="title">
+        <div class="group-name">{{ group.groupName }}</div>
+        <div class="message-count">{{ numberOfMessages }} messages</div>
+      </div>
+
+      <!-- Loop through message groups -->
+      <div class="scroll">
+        <ng-container *ngFor="let group of messageGroups">
+          <div class="message-group">
+            <div class="header">
+              <div class="message-date">{{ group.date }}</div>
+            </div>
+            <!-- Loop through messages in the group -->
+            <div *ngFor="let message of group.messages" class="message-container"
+              [ngClass]="{'self': message.sender === username, 'other': message.sender !== username}">
+              <!-- Display profile picture -->
+              <div class="profile-image-container">
+                <img *ngIf="imageURLs[message.senderImgId]" [src]="imageURLs[message.senderImgId]" alt="Profile Picture"
+                  class="profile-image" />
+              </div>
+
+
+              <!-- Message content container -->
+              <div class="message-content-container">
+                <!-- Display sender name -->
+                <div class="message"
+                  [ngClass]="{'self-message': message.sender === username,  'other-message': message.sender !== username }">
+                  <span class="message-sender"> {{ message.sender | hideSelfName: username}}</span>
+                  <!-- Display message content -->
+                  <div class="message-content">{{ message.content }}</div>
+                  <!-- Display message timestamp -->
+                  <div class="message-timestamp">{{ message.timestamp | date: 'shortTime' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </div>
     </div>
 
-    <!-- Form to send messages -->
-    <div class="flex-grow-0 py-3 px-4 border-top">
-      <form [formGroup]="messageForm" (submit)="sendMessage()" class="input-group">
-        <input type="text" formControlName="message" placeholder="Type your message..." />
-        <button type="submit" [disabled]="messageForm.invalid">Send</button>
+    <!-- Group Info and Users Container -->
+    <div class="info-and-users-container">
+      <!-- Group Info Container -->
+      <div class="group-info-container" *ngIf="group">
+        <span class="group-info">Group Info</span>
+        <!-- Display Group Image -->
+        <div class="group-image-container" *ngIf="group.pictureId && imageURLs[group.pictureId]">
+          <img [src]="imageURLs[group.pictureId]" alt="Group Image" class="group-image">
+        </div>
+        <!-- Button to trigger edit group modal -->
+        <button class="btn1 btn-dark" (click)="openEditGroupModal()">Edit Group</button>
+        <!--button to leave group -->
+        <!-- Button to trigger edit group modal -->
+        <button class="btn1 btn-dark" (click)="leaveGroup()">Leave Group</button>
+      </div>
+
+      <!-- Users Container -->
+      <div class="users-container">
+        <div class="member-container" *ngIf="group">
+          <div class="members">{{group.userCount}} members</div>
+        </div>
+        <!-- Display List of Users -->
+        <div class="user">
+          <div class="user-info" *ngFor="let user of users">
+            <!-- Display profile picture -->
+            <img *ngIf="imageURLs[user.pictureId]" [src]="imageURLs[user.pictureId]" alt="Profile Picture"
+              class="profile-image" />
+            <!-- Display user name -->
+            <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+            <!-- Display "admin" badge for group creator -->
+            <span *ngIf="user.email === creatorEmail" class="admin-badge">admin</span>
+
+            <button mat-button color="primary" (click)="toggleUserProfile(user.email)">
+              {{ profileVisibility[user.email] ? 'bye' : 'hello' }}
+            </button>
+
+            <!-- User profile card (conditionally displayed) -->
+            <div *ngIf="profileVisibility[user.email]" class="user-profile-card">
+              <!-- Add user profile details here -->
+              <!-- Display profile picture -->
+              <img *ngIf="imageURLs[user.pictureId]" [src]="imageURLs[user.pictureId]" alt="Profile Picture"
+                class="user-image">
+              <div class="name-container">
+                <span class="name">{{user.firstName }} {{ user.lastName }}</span>
+                <span class="username">{{ user.userName | prependAt }}</span>
+              </div>
+
+              <div class="about-info">
+                <p class="about">About</p>
+
+                <p class="idd1">
+                  <mat-icon> location_on</mat-icon> {{user.country}}
+                </p>
+
+                <p class="idd1">
+                  <strong>Email:</strong> {{ user.email }}
+                </p>
+                <p class="idd1">
+                  <strong>Birth Date:</strong> {{ user.birthDate | date:'d MMMM yyyy' }}
+                </p>
+                <p class="idd1">
+                  <strong>Contact:</strong> {{ user.phoneNo }}
+                </p>
+
+                <p class="idd1">
+                  <strong>Joined:</strong> {{user.joinedDate | date:'d MMMM yyyy' }}
+                </p>
+
+                <div class="buttons">
+                  <button class="btn" (click)="MessageUser(user.email)">Message</button>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Group Modal -->
+    <div *ngIf="showEditModal" class="edit-group-modal">
+      <div class="header-edit">Edit Group Info</div>
+      <form [formGroup]="groupForm" (submit)="onSubmit()">
+        <div>
+          <label for="groupName">Group Name:</label>
+          <input type="text" id="groupName" formControlName="groupName">
+        </div>
+        <div>
+          <label for="image">Group Image:</label>
+          <input type="file" #image formControlName="image">
+        </div>
+
+        <div class="buttons">
+          <button type="button" class="btn-cancel" (click)="toggleEditing()">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
       </form>
     </div>
   </div>
 </div>
-

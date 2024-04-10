@@ -1,4 +1,4 @@
-<div class="container">
+<div class="eve-container">
     <div class="event-container">
         <div *ngIf="eventDetails" class="event-details">
 
@@ -6,44 +6,122 @@
                 <div class="event-image-container">
                     <img [src]="eventDetails[0].imageUrl" alt="Event Image" class="event-image">
                 </div>
-            </div> 
+            </div>
             <!-- end item-left -->
-    
+
             <div class="item-right">
                 <h2 class="title">{{ eventDetails[0].name }}</h2>
-            
+
                 <div class="sce">
                     <div class="icon">
                         <mat-icon>calendar_today</mat-icon>
                     </div>
                     <p>{{ eventDetails[0].localDate | date: 'EEE, d MMM y' }}
-                        <br/>{{ formatTime(eventDetails[0].localTime) }}</p>
+                        <br />{{ formatTime(eventDetails[0].localTime) }}
+                    </p>
                 </div>
 
                 <div class="fix">
                     <a href="{{eventDetails[0].eventUrl}}">
                         <button mat-button class="learn-more">Learn More</button>
                     </a>
-                </div>     
+                </div>
             </div> <!-- end item-right -->
-            
+
         </div> <!-- end item -->
     </div>
 
+    <p class="header">Place</p>
     <div class="map-container" *ngIf="mapUrl">
         <div class="location-details">
             <div class="loc-icon">
-                <mat-icon>location_on</mat-icon>
+                <mat-icon class="loc">location_on</mat-icon>
             </div>
             <div class="location-text">
-                <p>{{ eventDetails[0].venue.name }}</p>
-                <p>{{ eventDetails[0].venue.address }}</p>
+                <p class="venue-name-text">{{ eventDetails[0].venue.name }}</p>
+                <p class="venue-add-text">{{ eventDetails[0].venue.address }}</p>
             </div>
         </div>
         <iframe [src]="mapUrl" width="400" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
     </div>
-    
 
-    <button mat-raised-button [routerLink]="['/group', eventId]" class="chat-link">View Groups</button>
+</div>
+
+<!--groups-->
+
+<div class="container">
+    <div class="header-container">
+        <p class="header">Groups</p>
+        <!-- Button to toggle the create group form -->
+        <button mat-raised-button (click)="toggleCreateForm()" class="create-button">
+            Create Group <mat-icon class="icon">add</mat-icon> </button>
+    </div>
+
+    <!-- Create Group Form -->
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" *ngIf="showCreateForm">
+        <!-- Modal Content -->
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="new-group">New Group</h2>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="createform" (submit)="createAndJoinGroup()">
+                    <div class="modal-group">
+                        Group Name: <input type="text" id="groupName" formControlName="groupName" required>
+                    </div>
+
+                    <div class="buttons">
+                        <button type="button" class="btn-cancel" (click)="cancelCreateGroup()">Cancel</button>
+                        <button type="submit" class="btn-create">Create Group</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="groups$ | async as groups">
+        <div *ngIf="groups.length > 0; else NoGroupsContent" class="card-list">
+            <div *ngFor="let group of groups" class="group-card">
+                <div class="group-details">
+                    <div class="group-image-con">
+                        <img *ngIf="imageURLs[group.pictureId]" [src]="imageURLs[group.pictureId]" alt="Group Image"
+                            class="group-img">
+                    </div>
+                    <div class="group-info">
+                        <p class="group-name">{{ group.groupName }}</p>
+                        <div class="info-container">
+                            <div class="sliced-users">
+                                <div *ngFor="let user of sliceUsersForDisplay(group, users); let first = first" class="user-wrapper">
+                                  <img *ngIf="imageURLs[user.pictureId]" [src]="imageURLs[user.pictureId]"
+                                       alt="Profile Picture" class="profile-image" [class.full-circle]="first"
+                                       style="width: 30px; height: 30px;" />
+                                </div>
+                                <span *ngIf="displayPlusOthers(group, users)" class="user-count">
+                                    +{{ group.userCount - 3 }} others
+                                </span>
+                                
+                              </div>
+                        </div>
+
+                        <div>
+                            <mat-icon class="icon">date_range</mat-icon>
+                            <span> Created on {{ group.timestamp | date: 'dd MMM yyyy' }}</span>
+                        </div>
+
+                        <div>
+                            <button class="btn" (click)="joinGroup(group.groupId)" [disabled]="showCreateForm">join
+                                >>>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <ng-template #NoGroupsContent>
+        <p>No groups created yet</p>
+    </ng-template>
 
 </div>

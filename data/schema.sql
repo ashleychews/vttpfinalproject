@@ -24,6 +24,9 @@ create table user_profile (
     phonenumber VARCHAR(20) not null,
     pic_id char(8) not null,
     mime varchar(128),
+    joined_date DATE not null,
+    country varchar(50),
+    last_edited TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     FOREIGN KEY (email) REFERENCES users(email)
 

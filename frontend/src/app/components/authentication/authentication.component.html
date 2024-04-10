@@ -3,13 +3,18 @@
 
     <span class="header"></span>
 
-    <a class="nav-link" [routerLink]="['/']">Home</a>
-    <a class="nav-link" [routerLink]="['/events']">Events</a>
+    <a class="nav-link" [routerLink]="['/']">
+        <mat-icon>home</mat-icon>Home</a>
+    <a class="nav-link" [routerLink]="['/events']">
+        <mat-icon>event</mat-icon>Events</a>
+    <a class="nav-link" [routerLink]="['/group']">
+        <mat-icon>group</mat-icon>Groups</a>
 
-    <ng-container *ngIf="isLoggedIn(); else loggedOutTemplate">
+    <ng-container *ngIf="isLoggedIn$ | async as isLoggedIn; else loggedOutTemplate">
         <!-- Display "My Account" and "Sign Out" options when logged in -->
         <div class="dropdown">
-            <button class="nav-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="nav-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
                 My Account
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -22,8 +27,7 @@
     <ng-template #loggedOutTemplate>
         <!-- Display "Sign In/Register" option when logged out -->
         <a class="nav-link" [routerLink]="['/login']">
-            <mat-icon>person_outline</mat-icon>Sign In/Register
+            <mat-icon>person</mat-icon>Sign In/Register
         </a>
     </ng-template>
 </mat-toolbar>
-

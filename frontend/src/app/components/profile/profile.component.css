@@ -1,65 +1,107 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
-* {
-  font-family: "Lato", sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 300px; /* Adjust the height as needed */
+  z-index: -1; /* Ensure the background image is behind other content */
 }
 
-.card {
-  width: 500px;
-  background-color: #eff5f5;
-  border: none;
-  cursor: pointer;
-  transition: all 0.5s;
+/* Additional styling for the image within the background */
+.background-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image covers the entire background */
+}
+
+.container {
+  display: flex; /* Use flexbox for the container */
+  justify-content: space-between; /* Add space between the cards */
+  z-index: 0;
+}
+
+.content {
   display: flex;
-  flex-direction: row; /* Change flex direction to row */
+}
+
+.left-card {
+  flex: 1;
+  border: 1px solid #ccc; /* Add border */
+  padding: 20px; /* Add padding for spacing */
+  width: 250px;
+  margin-top: 30px;
+  margin-left: 20px;
+  background-color: white;
+  height: 500px;
+}
+
+.right-card {
+  flex: 2;
+  margin-left: 20px;
   padding: 20px;
+  width: 800px;
+  margin-top: 220px;
 }
 
-.left-content {
-  width: 50%; /* Set width to 50% for left content */
-  padding-right: 20px; /* Optional: Add some spacing between left and right content */
+span, p, .header, .header-sub {
+  font-family: "Poppins", sans-serif;
 }
 
-.right-content {
-  width: 50%; /* Set width to 50% for right content */
-  padding-left: 20px; /* Optional: Add some spacing between left and right content */
-}
-
-.image img {
-  transition: all 0.5s;
-}
-
-.card:hover .image img {
-  transform: scale(1.5);
-}
-
-.profile-image {
-  width: 150px; /* Make the image fill the container */
-  height: 150px; /* Allow the height to adjust proportionally */
-  border-radius: 50%; /* Make the image circular */
-  object-fit: cover; /* Ensure the image fills the circular shape */
+.name-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px; /* Add margin bottom for spacing */
 }
 
 .name {
-  font-size: 22px;
-  font-weight: 900;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 16px;
+}
+
+.username {
+  font-weight: 600;
+  font-style: normal;
+  font-size: 14px;
+}
+
+p {
+  font-size: 12px;
 }
 
 .about {
-  font-size: 20px;
-  font-weight: 900;
-  text-transform: uppercase;
-  color: #20247b;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 14px;
 }
 
-
-.idd {
-  font-size: 14px;
-  font-weight: 600;
+.image {
+  border: 1px solid #ccc;
+  border-radius: 50%; /* Add border-radius to make the image rounded */
+  overflow: hidden; /* Ensure the image is contained within the rounded border */
+  width: 160px;
+  height: 160px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  margin: 0 auto; /* Center the container within the left card */
 }
 
-.idd1 {
-  font-size: 14px;
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.edit-button-container {
+  display: flex;
+  justify-content: center;
 }
 
 .btn1 {
@@ -68,58 +110,96 @@
   border: none;
   background-color: #000;
   color: #aeaeae;
-  font-size: 15px;
+  font-size: 14px
 }
 
-.text span {
-  font-size: 13px;
-  color: #545454;
-  font-weight: 500;
+
+/*edit form*/
+
+.editform {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px; /* Adjust the maximum width as needed */
+  margin: 0 auto; /* Center the edit form horizontally */
 }
 
-.edit-form {
-  padding: 1rem;
+.editcard {
+  width: 300px;
 }
 
-.form-group {
-  margin-bottom: 1rem; /* Optional: Add some space between form groups */
+.left-content, .right-content {
+  flex: 1;
+  padding: 10px;
 }
 
-label {
-  font-weight: bold;
+.buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Add margin to separate from other elements */
 }
 
-input[type="text"],
-input[type="file"] {
-  width: 100%; /* Make inputs fill the width of their container */
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-  border: 1px solid #ccc; /* Set your desired border color */
-  transition: border-color 0.3s ease;
+.buttons button {
+  margin: 0 5px; /* Add margin between the buttons */
 }
 
-input[type="text"]:focus,
-input[type="file"]:focus {
-  outline: none;
-  border-color: #007bff; /* Change border color on focus */
+/*right card*/
+.header {
+  font-weight: 800;
+  font-style: normal;
+  font-size: 16px;
 }
 
-button[type="submit"],
-button[type="button"] {
-  margin-top: 1rem; /* Optional: Add some space above buttons */
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.25rem;
+.header-sub {
+  font-size: 12px;
+}
+
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three cards per row */
+  grid-gap: 20px; /* Adjust spacing between cards */
+}
+
+.group-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+  width: 200px; /* Adjust width as needed */
+  height: 200px; /* Adjust height as needed */
+}
+
+.group-image {
+  width: 200px;
+  height: 120px;
+  object-fit: cover; 
+  border-radius: 30px 10px 30px 10px;
+  opacity: 0.8;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-button[type="submit"] {
-  background-color: #007bff; /* Set your desired button color */
-  color: #fff; /* Set your desired text color */
+.group-card:hover {
+  background-color: #f0f0f0; /* Change background color on hover */
+  cursor: pointer; 
 }
 
-button[type="submit"]:hover,
-button[type="button"]:hover {
-  background-color: #0056b3; /* Change button color on hover */
+.group-name {
+  padding: 10px 0;
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 16px;
+}
+
+.no-groups-message {
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 14px;
+  color: rgb(199, 107, 107);
 }

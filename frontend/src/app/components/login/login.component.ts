@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { UserStore } from '../../services/user.store';
+import { Store } from '@ngrx/store';
+import { AppState } from '../authentication/app.state';
+import { login } from '../authentication/auth.actions';
 
 @Component({
   selector: 'app-login',
@@ -13,11 +16,11 @@ export class LoginComponent implements OnInit{
 
   hide = true
   loginform!: FormGroup
+  errorMessage: string = ''
 
   private fb = inject(FormBuilder)
-  private userSvc = inject(UserService)
-  private router = inject(Router)
   private userStore = inject(UserStore)
+  private store = inject(Store<AppState>)
 
   ngOnInit(): void {
     this.loginform = this.login()
@@ -34,15 +37,10 @@ export class LoginComponent implements OnInit{
     if (this.loginform.valid) {
       const userData = this.loginform.value;
       console.log("Logging in:", userData);
-      this.userSvc.login(userData)
-        .then(response => {
-          alert("Login successful")
-          this.router.navigate(['/events'])
-          this.userStore.setEmail(userData.email)
-        })
-        .catch(error => {
-          alert("Login Failed")
-        });
+
+      //Dispatch the login action with user data
+      this.store.dispatch(login({ user: userData }))
+      this.userStore.setEmail(userData.email)
     }
   }
 }

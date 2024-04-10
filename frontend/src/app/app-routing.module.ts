@@ -11,6 +11,7 @@ import { DetailsComponent } from './components/details/details.component';
 import { AuthGuard } from './auth.guard';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatGroupComponent } from './components/chat-group/chat-group.component';
+import { UserchatComponent } from './components/userchat/userchat.component';
 
 const routes: Routes = [
 
@@ -32,9 +33,11 @@ const routes: Routes = [
 
   { path: 'search/:keyword', component: SearchComponent},
 
-  { path: 'group/:eventId', component: ChatGroupComponent,  canActivate: [AuthGuard] },
+  { path: 'group', component: ChatGroupComponent, canActivate: [AuthGuard] },
 
   { path: 'chat/:eventId/:groupId', component: ChatComponent, canActivate: [AuthGuard] },
+
+  { path: 'single-chat/:id', component: UserchatComponent, canActivate: [AuthGuard]},
 
   //wild card
   { path: '**', redirectTo: '/', pathMatch: 'full'}

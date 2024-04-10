@@ -17,5 +17,8 @@ public class UserProfile {
     private String phoneNo;
     private String pictureId;
     private String mediaType;
-    
+    private String joinedDate;
+    private String country;
+    private String lastEdited;
+
 }

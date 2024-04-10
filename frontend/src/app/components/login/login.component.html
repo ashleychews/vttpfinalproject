@@ -8,6 +8,11 @@
         <span>EMAIL</span>
         <mat-form-field appearance="outline">
           <input matInput type="email" formControlName="email">
+          <mat-error *ngIf="loginform.get('email')?.errors">
+            <span *ngIf="loginform.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="loginform.get('email')?.errors?.['invalid']">Invalid email format</span>
+          </mat-error>
+          
         </mat-form-field>
 
         <span>PASSWORD</span>
@@ -17,9 +22,10 @@
             [attr.aria-pressed]="hide">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
+          <mat-error *ngIf="loginform.get('password')?.errors?.['required']">Password is required</mat-error>
         </mat-form-field>
 
-        <button mat-raised-button type="submit" color="primary">Login</button>
+        <button mat-raised-button type="submit" color="primary" [disabled]="loginform.invalid">Login</button>
 
       </form>
     </mat-card-content>

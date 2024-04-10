@@ -1,61 +1,122 @@
-<div class="container mt-4 mb-4 p-3 d-flex justify-content-center mx-auto" *ngIf="profile">
-    <div class="card" *ngIf="!isEditing; else editMode">
-        <div class="left-content">
-            <div class="image d-flex flex-column justify-content-center align-items-center">
-                <div>
-                    <img *ngIf="imageURL" [src]="imageURL" alt="Profile Picture" class="profile-image" />
-                </div>
+<div class="background-image">
+    <img src="/assets/profile-background.jpg">
+</div>
+<div class="container" *ngIf="profile">
+    <div *ngIf="!isEditing; else editMode" class="content">
+        <div class="left-card">
+            <div class="image">
+                <img *ngIf="imageURL" [src]="imageURL" alt="Profile Picture" class="profile-image" />
+            </div>
+
+            <div class="name-container">
                 <span class="name">{{ profile.firstName }} {{ profile.lastName }}</span>
-                <span class="idd">{{ profile.userName | prependAt }}</span>
-                <div class="d-flex mt-2">
-                    <button class="btn1 btn-dark" (click)="toggleEditing()">Edit Profile</button>
-                </div>
+                <span class="username">{{ profile.userName | prependAt }}</span>
+            </div>
+
+            <div class="about-info">
+                <p class="about">About</p>
+
+                <p class="idd1">
+                    <mat-icon> location_on</mat-icon> {{profile.country}}
+                </p>
+
+                <p class="idd1">
+                    <strong>Email:</strong> {{ profile.email }}
+                </p>
+                <p class="idd1">
+                    <strong>Birth Date:</strong> {{ profile.birthDate | date:'d MMMM yyyy' }}
+                </p>
+                <p class="idd1">
+                    <strong>Contact:</strong> {{ profile.phoneNo }}
+                </p>
+
+                <p class="idd1">
+                    <strong>Joined:</strong> {{profile.joinedDate | date:'d MMMM yyyy' }}
+                </p>
+            </div>
+
+            <div class="edit-button-container">
+                <button class="btn1 btn-dark" (click)="toggleEditing()">Edit Profile</button>
             </div>
         </div>
-        <div class="right-content">
-            <div class="about-container">
-                <p class="about">About Me</p>
-                <div class="about-info">
-                    <p class="idd1">
-                        <strong>Email:</strong> {{ profile.email }}</p>
-                    <p class="idd1">
-                        <strong>Birth Date:</strong> {{ profile.birthDate }}</p>
-                    <p class="idd1">
-                        <strong>Contact:</strong> {{ profile.phoneNo }}</p>
+
+        <div class="right-card">
+
+            <div *ngIf="groupsJoined$ | async as groups">
+                <!-- List of groups joined -->
+                <div class="group-list" *ngIf="groups.length > 0 else noGroups">
+                    <div class="header">Joined Groups</div>
+                    <div class="header-sub">{{ groups.length }} groups</div>
+                    <div class="group-grid">
+                        <div class="group-card" *ngFor="let group of groups"
+                            [routerLink]="['/chat', group.eventId, group.groupId]">
+                            <div class="group-image-container">
+                                <img *ngIf="groupURL[group.pictureId]" [src]="groupURL[group.pictureId]"
+                                    alt="Group Image" class="group-image">
+                            </div>
+                            <div class="group-name">{{ group.groupName }}</div>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #noGroups>
+                    <div class="no-groups-message">You have not joined any groups yet</div>
+                </ng-template>
+            </div>
+
+            <div>
+                <div class="header">Your Chats<mat-icon> chat</mat-icon></div>
+                <!-- Display chat room IDs and provide navigation -->
+                <div *ngIf="chatRoomIDs$ | async as chatRoomIDs">
+                    <div *ngFor="let chatRoomId of chatRoomIDs">
+                        <a [routerLink]="['/single-chat', chatRoomId]">Chat Room ID: {{ chatRoomId }}</a>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 
+    <!-- Edit mode -->
     <ng-template #editMode>
-        <div class="edit-form">
+        <div class="editform">
             <form [formGroup]="profileForm" (submit)="onSubmit()">
-                <div class="form-group">
-                    <label for="image">Profile Picture:</label>
-                    <input type="file" id="image" formControlName="image">
+                <!-- Edit Profile Form -->
+                <div class="card edit-card">
+                    <div class="left-content">
+                        <p class="about">Edit Profile</p>
+                        <div class="image">
+                            <img *ngIf="imageURL" [src]="imageURL" alt="Current Profile Picture"
+                                class="profile-image" />
+                        </div>
+                        <input type="file" id="image" formControlName="image" #image>
+
+                        <p class="idd1">
+                            <strong>First Name:</strong> <input type="text" id="firstName" formControlName="firstName">
+                        </p>
+
+                        <p class="idd1">
+                            <strong>Last Name:</strong> <input type="text" id="lastName" formControlName="lastName">
+                        </p>
+
+                        <p class="idd1">
+                            <strong>Username:</strong> <input type="text" id="userName" formControlName="userName">
+                        </p>
+
+                        <p class="idd1">
+                            <strong>Birth Date:</strong> <input type="text" id="birthDate" formControlName="birthDate">
+                        </p>
+                        <p class="idd1">
+                            <strong>Phone Number</strong> <input type="text" id="phoneNo" formControlName="phoneNo">
+                        </p>
+
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="userName">Username:</label>
-                    <input type="text" id="userName" formControlName="userName">
+
+                <div class="buttons">
+                    <button type="submit" mat-raised-button color="primary">Save</button>
+                    <button type="button" mat-raised-button color="warn" (click)="toggleEditing()">Cancel</button>
                 </div>
-                <div class="form-group">
-                    <label for="firstName">First Name:</label>
-                    <input type="text" id="firstName" formControlName="firstName">
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name:</label>
-                    <input type="text" id="lastName" formControlName="lastName">
-                </div>
-                <div class="form-group">
-                    <label for="birthDate">Birth Date:</label>
-                    <input type="text" id="birthDate" formControlName="birthDate">
-                </div>
-                <div class="form-group">
-                    <label for="phoneNo">Phone Number:</label>
-                    <input type="text" id="phoneNo" formControlName="phoneNo">
-                </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-secondary" (click)="toggleEditing()">Cancel</button>
+
             </form>
         </div>
     </ng-template>

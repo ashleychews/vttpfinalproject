@@ -1,0 +1,43 @@
+<div class="container">
+
+    <div class="chat-container">
+
+        <!-- Form to send messages -->
+        <div class="form-container">
+            <form [formGroup]="messageForm" (submit)="sendMessage()" class="input-group">
+                <div class="input-wrapper">
+                    <input type="text" formControlName="message" placeholder="Your message..." />
+                    <mat-icon class="send-icon" (click)="sendMessage()" [ngClass]="{ 'disabled': disabled }"
+                        [matTooltip]="'Send Message'">send</mat-icon>
+                </div>
+            </form>
+        </div>
+
+        <!-- Display Recipient Name as header -->
+        <div *ngIf="recipientProfile" class="title">
+            <div class="recipient-name">{{ recipientProfile.firstName }} {{recipientProfile.lastName}}</div>
+        </div>
+
+        <!-- Loop through message groups -->
+        <div class="scroll">
+            <!-- Loop through grouped messages -->
+            <div *ngFor="let dateKey of groupedMessagesKeys()">
+                <div class="header">
+                    <div class="message-date">{{ dateKey | date:'dd MMMM' }}</div>
+                </div>
+
+                <!-- Loop through messages for the date -->
+                <div *ngFor="let message of groupedMessages[dateKey]" class="message-content-container"
+                    [ngClass]="{'self': isSender(message.senderEmail), 'other': !isSender(message.senderEmail)}">
+                    <!-- Display Sender's username, message content, and timestamp -->
+                    <div class="message"
+                        [ngClass]="{ 'self-message' : isSender(message.senderEmail), 'other-message': !isSender(message.senderEmail) }">
+                        <div class="content">{{ message.content }}</div>
+                        <div class="timestamp">{{ message.timestamp | date: 'shortTime' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

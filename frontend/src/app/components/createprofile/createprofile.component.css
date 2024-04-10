@@ -42,3 +42,8 @@ span {
     text-align: center;
     color: grey;
 }
+
+select {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+}

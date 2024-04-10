@@ -44,10 +44,13 @@
             <mat-card class="card" (click)="onEventClick(event.id)">
                 <img mat-card-image class="event-image" [src]="event.imageUrl">
                 <mat-card-content>
-                    <mat-card-title>{{ event.name }}</mat-card-title>
-                    <mat-card-subtitle>{{event.localDate | date: 'EEE, d MMM y' }} ({{ formatTime(event.localTime)
-                        }})</mat-card-subtitle>
+                    <div class="date">
+                        <span class="month">{{ event.localDate | date: 'MMM' }}</span>
+                        <span class="day">{{ event.localDate | date: 'd' }}</span>
+                    </div>
+                    <div class="event-name">{{ event.name }}</div>
                 </mat-card-content>
+                
             </mat-card>
         </div>
     </div>

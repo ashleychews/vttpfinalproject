@@ -1,8 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { UserStore } from '../../services/user.store';
 import { Router } from '@angular/router';
+import { COUNTRY_LIST } from '../../constants';
 
 @Component({
   selector: 'app-profile',
@@ -19,6 +20,8 @@ export class CreateProfileComponent implements OnInit{
   private userStore = inject(UserStore)
   private router = inject(Router)
 
+  countryList = COUNTRY_LIST
+
   ngOnInit(): void {
     //retrieve email from the component store
     this.userStore.getEmail.subscribe(email => this.email = email)
@@ -30,8 +33,9 @@ export class CreateProfileComponent implements OnInit{
       userName: this.fb.control<string>('', [Validators.required, Validators.minLength(3)]),
       firstName: this.fb.control<string>('', [Validators.required, Validators.minLength(3)]),
       lastName: this.fb.control<string>('', [Validators.required, Validators.minLength(3)]),
-      birthdate: this.fb.control<string>('', [Validators.required]),
-      phoneNumber: this.fb.control<string>('', [Validators.required])
+      birthdate: this.fb.control<string>('', [Validators.required, this.validateBirthDate]),
+      phoneNumber: this.fb.control<string>('', [Validators.required]),
+      country: this.fb.control<string>('', [Validators.required])
     })
   }
 
@@ -42,7 +46,6 @@ export class CreateProfileComponent implements OnInit{
         .then(() => {
           console.log('Profile setup successful')
           alert('Profile setup successful')
-          this.userSvc.isLoggedIn()
           // Redirect to dashboard
           this.router.navigate(['/profile'])
         })
@@ -51,6 +54,16 @@ export class CreateProfileComponent implements OnInit{
           alert('Error setting up profile')
         })
     }
+  }
+
+  //validation for birthdate
+  validateBirthDate(control: AbstractControl): ValidationErrors | null {
+    const birthDate = new Date(control.value)
+    const currentDate = new Date()
+    if (birthDate >= currentDate) {
+      return { futureDate: true } // Return custom error if birth date is in the future
+    }
+    return null // Return null if validation passes
   }
 
 

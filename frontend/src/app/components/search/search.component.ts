@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Events } from '../../models';
 import { Observable } from 'rxjs';
 import { EventService } from '../../services/event.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -22,6 +22,7 @@ export class SearchComponent implements OnInit{
 
   private eventSvc = inject(EventService)
   private route = inject(ActivatedRoute)
+  private router = inject(Router)
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -87,6 +88,11 @@ export class SearchComponent implements OnInit{
     const amPm = hours >= 12 ? 'PM' : 'AM'
     const formattedHours = hours % 12 === 0 ? 12 : hours % 12
     return `${formattedHours}:${minutes < 10 ? '0' + minutes : minutes} ${amPm}`
+  }
+
+  onEventClick(eventId: string): void {
+    // Navigate to the event details page with the event ID as a route parameter
+    this.router.navigate(['/event-details', eventId])
   }
 
 }

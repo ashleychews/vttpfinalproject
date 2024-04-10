@@ -28,8 +28,33 @@ public class ChatService {
         return chatGroupRepo.getgroupsByEventId(eventId);
     }
 
+    public ChatGroup getGroupbyGroupId(String groupId) {
+        return chatGroupRepo.getGroupbyGroupId(groupId);
+    }
+
     public void addUsersToGroup(String groupId, String email) {
         chatGroupRepo.addUserstoGroup(groupId, email);
+    }
+
+    public void leaveGroup(String groupId, String email) {
+        chatGroupRepo.leaveGroup(groupId, email);
+    }
+
+    public long countMessagesInGroup(String groupId) {
+        return chatGroupRepo.countMessagesInGroup(groupId);
+    }
+
+    public void updateGroup(String groupId, String newGroupName, String newPictureId) {
+        chatGroupRepo.updateGroup(groupId, newGroupName, newPictureId);
+    }
+
+    public List<ChatGroup> getGroupsJoinedByUser(String email) {
+        return chatGroupRepo.getGroupsJoinedByUser(email);
+    }
+
+    // get all chat groups
+    public List<ChatGroup> getAllGroups() {
+        return chatGroupRepo.findAllGroups();
     }
 
     // Chat Messages

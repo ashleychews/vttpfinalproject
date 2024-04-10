@@ -12,25 +12,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-//collection is chat
+//collection is user_messages
 
-public class ChatMessage {
-    
-    private String groupId;
-    private String sender; // Reference to the user who sent the message
-    private String senderImgId;
+public class UserMessages {
+
+    private String chatRoomID;
     private String content;
+    private String senderEmail;
+    private String recipientEmail;
     private LocalDateTime timestamp;
 
     public Document toDocument() {
 		Document doc = new Document();
-		doc.put("groupId", groupId);
-		doc.put("sender", sender);
-        doc.put("senderImgId", senderImgId);
-        doc.put("content", content);
+        doc.put("chatRoomID", chatRoomID);
+		doc.put("content", content);
+        doc.put("senderEmail", senderEmail);
+        doc.put("recipientEmail", recipientEmail);
         doc.put("timestamp", timestamp);
 		return doc;
 	}
-
-
 }

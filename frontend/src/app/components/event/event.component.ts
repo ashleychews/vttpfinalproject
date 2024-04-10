@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { COUNTRY_LIST } from '../../constants';
 import { EventService } from '../../services/event.service';
-import { Observable } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { Events } from '../../models';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -72,7 +72,13 @@ export class EventComponent implements OnInit {
   loadEvents(): void {
     if (this.selected) {
       this.events$ = this.eventSvc.getEventsByCountry(this.selected, this.page, this.size)
+      .pipe(
+        map(events => events.filter(event => new Date(event.localDate) > new Date()))
+      )
+
       this.events$.subscribe(events => {
+        // Sort events by date
+        this.events$ = this.sortEvents(events)
         // Disable next button if there are no events
         this.hasNextPage = events.length > 0
       })
@@ -83,10 +89,16 @@ export class EventComponent implements OnInit {
 
   loadAllEvents(): void {
     this.selected = ''; // Reset selected country
-    this.events$ = this.eventSvc.getAllEvents(this.page, this.size);
+    this.events$ = this.eventSvc.getAllEvents(this.page, this.size)
+    .pipe(
+      map(events => events.filter(event => new Date(event.localDate) > new Date()))
+    )
+
     this.events$.subscribe(events => {
+      // Sort events by date
+      this.events$ = this.sortEvents(events)
       // Disable next button if there are no events
-      this.hasNextPage = events.length > 0;
+      this.hasNextPage = events.length > 0
     })
   }
 
@@ -98,7 +110,7 @@ export class EventComponent implements OnInit {
       this.hasPreviousPage = true
     }
   }
-  
+
   loadPreviousPage(): void {
     if (this.page > 0) {
       this.page--;
@@ -107,8 +119,8 @@ export class EventComponent implements OnInit {
   }
 
   navigateToPage(page: number): void {
-    this.router.navigate(['/events', page], 
-    {queryParams: { page: page }})
+    this.router.navigate(['/events', page],
+      { queryParams: { page: page } })
   }
 
   loadLastPageNumber(): void {
@@ -140,16 +152,13 @@ export class EventComponent implements OnInit {
     this.router.navigate(['/event-details', eventId])
   }
 
-  formatTime(time: string): string {
-    const [hours, minutes] = time.split(':').map(Number)
-    const amPm = hours >= 12 ? 'PM' : 'AM'
-    const formattedHours = hours % 12 === 0 ? 12 : hours % 12
-    return `${formattedHours}:${minutes < 10 ? '0' + minutes : minutes} ${amPm}`
-  }
-
   getCountryNameByCode(code: string): string {
     const country = this.countries.find(c => c.code === code)
     return country ? country.name : ''
+  }
+
+  sortEvents(events: Events[]): Observable<Events[]> {
+    return of(events.sort((a, b) => new Date(a.localDate).getTime() - new Date(b.localDate).getTime()))
   }
 
 }

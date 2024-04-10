@@ -3,27 +3,53 @@
   <span>USERNAME</span>
   <mat-form-field appearance="outline">
     <input matInput type="text" formControlName="userName" placeholder="Username">
+    <mat-error *ngIf="profileForm.get('userName')?.invalid && profileForm.get('userName')?.touched">
+      Username is required and must be at least 3 characters long.
+    </mat-error>
   </mat-form-field>
 
   <span>FIRST NAME</span>
   <mat-form-field appearance="outline">
     <input matInput type="text" formControlName="firstName" placeholder="First Name">
+    <mat-error *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+      First name is required and must be at least 3 characters long.
+    </mat-error>
   </mat-form-field>
 
   <span>LAST NAME</span>
   <mat-form-field appearance="outline">
     <input matInput type="text" formControlName="lastName" placeholder="Last Name">
+    <mat-error *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
+      Last name is required and must be at least 3 characters long.
+    </mat-error>
   </mat-form-field>
 
   <span>BIRTH DATE</span>
   <mat-form-field appearance="outline">
     <input matInput type="date" formControlName="birthdate" placeholder="Birthdate">
+    <mat-error *ngIf="profileForm.get('birthdate')?.invalid && profileForm.get('birthdate')?.touched">
+      Birthdate is required
+    </mat-error>
+    <mat-error *ngIf="profileForm.get('birthdate')?.hasError('futureDate')">
+      Birthdate cannot be in the future
+    </mat-error>
   </mat-form-field>
 
   <span>PHONE NUMBER</span>
   <mat-form-field appearance="outline">
     <input matInput type="tel" formControlName="phoneNumber" placeholder="Phone number">
+    <mat-error *ngIf="profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched">
+      Phone number is required.
+    </mat-error>
   </mat-form-field>
+
+
+  <span>COUNTRY</span>
+  <select formControlName="country" class="form-control" id="country">
+    <option value="">Select Country</option>
+    <option *ngFor="let country of countryList | keyvalue" [value]="country.key">{{ country.key }}</option>
+  </select>
+  <div *ngIf="profileForm.get('country')?.errors?.['required']" class="text-danger">Please select a country</div>
 
   <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">Save Profile</button>
 </form>
