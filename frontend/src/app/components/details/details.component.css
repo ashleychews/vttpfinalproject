@@ -29,10 +29,16 @@
     justify-content: center;
     margin-top: 10px;
 }
-p, span, .venue-add-text  {
+span, .venue-add-text  {
     font-family: "Lato", sans-serif;
     font-size: 12px;
 }
+
+p {
+    font-family: "Poppins", sans-serif;
+    font-size: 12px;
+}
+
 .learn-more, .google {
     cursor: pointer;
     font-size: 12px;

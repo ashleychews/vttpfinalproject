@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit{
   process() {
     if (this.loginform.valid) {
       const userData = this.loginform.value;
-      console.log("Logging in:", userData);
+      //console.log("Logging in:", userData);
 
       //Dispatch the login action with user data
       this.store.dispatch(login({ user: userData }))

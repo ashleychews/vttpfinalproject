@@ -66,12 +66,12 @@
     flex-grow: 1;
 }
 
-.message-timestamp {
+.timestamp {
     font-size: 0.8em;
     color: #777;
 }
 
-.self-message .message-timestamp {
+.self-message .timestamp {
     color: white;
 }
 
