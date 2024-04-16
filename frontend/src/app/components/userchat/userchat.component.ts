@@ -230,8 +230,8 @@ export class UserchatComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.scrollToBottom();
-    }, 100);
+      this.scrollToBottom()
+    }, 100)
   }
 
 
