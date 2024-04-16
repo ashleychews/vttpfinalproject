@@ -20,55 +20,55 @@ export class UserWebSocketService {
         onMessageCallback: (message: Message) => void
     ) {
         if (this.connected) {
-            console.log('Single User WebSocket already connected');
+            console.log('Single User WebSocket already connected')
             return;
         }
 
-        console.log('Connecting to Single User WebSocket');
-        this.chatRoomId = chatRoomId;
+        console.log('Connecting to Single User WebSocket')
+        this.chatRoomId = chatRoomId
 
-        const websocketURL = `${URL}/single-chat`;
-        const sockJS = new SockJS(websocketURL);
+        const websocketURL = `${URL}/single-chat`
+        const sockJS = new SockJS(websocketURL)
 
         this.stompClient = new Client({
             webSocketFactory: () => sockJS,
             debug: (msg: string) => console.log(msg)
-        });
+        })
 
         this.stompClient.onConnect = () => {
-            console.log('Single User WebSocket connected');
+            console.log('Single User WebSocket connected')
 
-            const topic = `/topic/single-chat/${this.chatRoomId}`;
-            this.stompClient.subscribe(topic, onMessageCallback);
-        };
+            const topic = `/topic/single-chat/${this.chatRoomId}`
+            this.stompClient.subscribe(topic, onMessageCallback)
+        }
 
         this.stompClient.onDisconnect = () => {
-            console.log('Single User WebSocket disconnected');
-            this.connected = false;
-            this.chatRoomId = '';
-        };
+            console.log('Single User WebSocket disconnected')
+            this.connected = false
+            this.chatRoomId = ''
+        }
 
-        this.stompClient.activate();
+        this.stompClient.activate()
         this.connected = true;
     }
 
     sendSingleUserMessage(content: string) {
         if (!this.connected) {
-            console.error('Single User WebSocket not connected');
-            return;
+            console.error('Single User WebSocket not connected')
+            return
         }
 
-        const topic = `/app/single-chat/${this.chatRoomId}`;
+        const topic = `/app/single-chat/${this.chatRoomId}`
 
-        const message = { content };
-        this.stompClient.publish({ destination: topic, body: JSON.stringify(message) });
+        const message = { content }
+        this.stompClient.publish({ destination: topic, body: JSON.stringify(message) })
     }
 
     disconnect() {
         if (this.stompClient && this.stompClient.connected) {
-            this.stompClient.deactivate();
+            this.stompClient.deactivate()
             this.connected = false;
-            this.chatRoomId = '';
+            this.chatRoomId = ''
         }
     }
 }

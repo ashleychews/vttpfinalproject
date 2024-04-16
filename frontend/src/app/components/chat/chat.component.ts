@@ -324,7 +324,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
           this.closeEditGroupModal()
           this.getImage(response.pictureId) //fetch updated image
         }, (error) => {
-          // Handle error
           console.error('Error updating group:', error)
         })
     }
@@ -408,7 +407,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
       message.content.toLowerCase().includes(this.messageForm.get('filterKeyword')?.value.toLowerCase())
     )
 
-    this.messageGroups = this.groupMessagesByDate(filteredMessages);
+    this.messageGroups = this.groupMessagesByDate(filteredMessages)
   }
 
   showSearchInput: boolean = false

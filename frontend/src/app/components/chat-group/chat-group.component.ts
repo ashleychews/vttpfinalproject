@@ -58,7 +58,7 @@ export class ChatGroupComponent implements OnInit {
         distinctUntilChanged() // Filter out repeated consecutive values
       )
       .subscribe(searchTerm => {
-        this.searchTerm = searchTerm.toLowerCase();
+        this.searchTerm = searchTerm.toLowerCase()
         this.applyFilter()
       })
 
@@ -115,7 +115,7 @@ export class ChatGroupComponent implements OnInit {
     console.log('Joining group with ID:', groupId)
     if (!this.email) {
       console.error('Email is not available.')
-      return;
+      return
     }
 
     this.chatSvc.joinGroup(groupId, this.email).subscribe(() => {
@@ -147,26 +147,21 @@ export class ChatGroupComponent implements OnInit {
   }
 
   selectionFilter(selectedFilter: string) {
-    console.log('Selected Filter:', selectedFilter);
     this.groups$ = this.chatSvc.getAllGroups().pipe(
       map(groups => {
         if (!selectedFilter) {
           return groups // No filter selected, return original groups
         }
-
         switch (selectedFilter) {
           case 'userCount':
-            //console.log('Sorting by userCount');
             return groups.slice().sort((a, b) => b.userCount - a.userCount)
           case 'creationDate':
-            //console.log('Sorting by creationDate');
             return groups.slice().sort((a, b) => {
               const dateA = new Date(a.timestamp).getTime();
               const dateB = new Date(b.timestamp).getTime();
               return dateB - dateA //descending order
             })
           case 'eventDate':
-            //console.log('Sorting by eventDate')
             return groups.slice().sort((a, b) => {
               const dateA = new Date(this.eventDetails[a.eventId].localDate).getTime();
               const dateB = new Date(this.eventDetails[b.eventId].localDate).getTime();
@@ -176,8 +171,6 @@ export class ChatGroupComponent implements OnInit {
             return groups
         }
       }),
-      // ensures that the observable is multicast and replays the last emitted value to new subscribers
-      shareReplay(1)
     )
   }
 

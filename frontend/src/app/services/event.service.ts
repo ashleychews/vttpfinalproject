@@ -32,7 +32,7 @@ export class EventService {
     }
 
     getMapUrl(name: string, address: string): Observable<string> {
-        return this.http.get(`${URL}/api/url?name=${name}&address=${address}`, { responseType: 'text' });
+        return this.http.get(`${URL}/api/url?name=${name}&address=${address}`, { responseType: 'text' })
     }
 
     getGoogleAuthUrl(): Observable<any> {
