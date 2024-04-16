@@ -44,6 +44,7 @@ export interface UserSlice {
 
 export interface ChatMessage {
     sender: string // name of sender
+    senderEmail: string //email
     senderImgId: string
     content: string // Content of the message
     timestamp: Date // Timestamp indicating when the message was sent

@@ -3,11 +3,11 @@
 
     <span class="header"></span>
 
-    <a class="nav-link" [routerLink]="['/']">
+    <a class="nav-link nav-item" [routerLink]="['/']">
         <mat-icon>home</mat-icon>Home</a>
-    <a class="nav-link" [routerLink]="['/events']">
+    <a class="nav-link nav-item" [routerLink]="['/events']">
         <mat-icon>event</mat-icon>Events</a>
-    <a class="nav-link" [routerLink]="['/group']">
+    <a class="nav-link nav-item" [routerLink]="['/group']">
         <mat-icon>group</mat-icon>Groups</a>
 
     <ng-container *ngIf="isLoggedIn$ | async as isLoggedIn; else loggedOutTemplate">

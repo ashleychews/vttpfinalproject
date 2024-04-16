@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import vttp.batch4.proj.backend.models.ChatMessage;
@@ -29,6 +30,13 @@ public class ChatRepository {
     public List<ChatMessage> getMessagesByGroupId(String groupId) {
         Query query = new Query(Criteria.where("groupId").is(groupId));
         return template.find(query, ChatMessage.class, "chat");
+    }
+
+    //update senderimgid based on email
+     public void updateSenderImgId(String senderEmail, String newImgId) {
+        Query query = new Query(Criteria.where("senderEmail").is(senderEmail));
+        Update update = new Update().set("senderImgId", newImgId);
+        template.updateMulti(query, update, ChatMessage.class, "chat");
     }
     
 }

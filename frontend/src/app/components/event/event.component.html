@@ -1,7 +1,7 @@
 <!-- Search form -->
 <form class="search-form" [formGroup]="searchForm" (submit)="onSearch()">
     <mat-form-field appearance="outline">
-        <input matInput placeholder="Search by event" formControlName="keyword">
+        <input matInput placeholder="Search by event" formControlName="keyword" class="searchinput">
         <button mat-button matSuffix type="submit">
             <mat-icon>search</mat-icon>
         </button>

@@ -67,4 +67,9 @@ public class ChatService {
         return chatRepo.getMessagesByGroupId(groupId);
     }
 
+
+    public void updateSenderImgId(String senderEmail, String newImgId) {
+        chatRepo.updateSenderImgId(senderEmail, newImgId);
+    }
+
 }

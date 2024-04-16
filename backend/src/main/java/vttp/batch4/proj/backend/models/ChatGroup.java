@@ -1,6 +1,4 @@
 package vttp.batch4.proj.backend.models;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import org.bson.Document;
 
@@ -22,7 +20,7 @@ public class ChatGroup {
     private String creator;
     private List<String> users; //list of users in group - by email
     private int userCount;
-    private LocalDateTime timestamp;
+    private String timestamp;
     private String pictureId;
     private String mediaType;
     

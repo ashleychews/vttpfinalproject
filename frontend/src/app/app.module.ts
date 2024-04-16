@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -34,6 +34,7 @@ import { authReducer } from './components/authentication/auth.reducer';
 import { StoreModule } from '@ngrx/store';
 import { UserWebSocketService } from './services/user-web-socket.service';
 import { UserchatComponent } from './components/userchat/userchat.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { UserchatComponent } from './components/userchat/userchat.component';
     ChatComponent,
     PrependAtPipe,
     ChatGroupComponent, 
-    HideSelfNamePipe, UserchatComponent
+    HideSelfNamePipe, 
+    UserchatComponent
   ],
   imports: [
     BrowserModule,
@@ -61,6 +63,12 @@ import { UserchatComponent } from './components/userchat/userchat.component';
     EffectsModule.forRoot([AuthEffects]),
     StoreModule.forRoot({ auth: authReducer }),
     StoreDevtoolsModule.instrument({}),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   providers: [
     provideAnimationsAsync(),

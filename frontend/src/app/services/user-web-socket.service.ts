@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Client, Message } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import { environment } from "../../environments/environment";
+
+const URL = environment.url
 
 @Injectable({
     providedIn: 'root'
@@ -24,7 +27,7 @@ export class UserWebSocketService {
         console.log('Connecting to Single User WebSocket');
         this.chatRoomId = chatRoomId;
 
-        const websocketURL = `http://localhost:8080/single-chat`;
+        const websocketURL = `${URL}/single-chat`;
         const sockJS = new SockJS(websocketURL);
 
         this.stompClient = new Client({

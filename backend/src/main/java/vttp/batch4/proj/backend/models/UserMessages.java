@@ -1,7 +1,5 @@
 package vttp.batch4.proj.backend.models;
 
-import java.time.LocalDateTime;
-
 import org.bson.Document;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +18,7 @@ public class UserMessages {
     private String content;
     private String senderEmail;
     private String recipientEmail;
-    private LocalDateTime timestamp;
+    private String timestamp;
 
     public Document toDocument() {
 		Document doc = new Document();

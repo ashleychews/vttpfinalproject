@@ -1,10 +1,10 @@
 package vttp.batch4.proj.backend.controllers;
 
 import java.io.StringReader;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -46,8 +46,9 @@ public class UserChatController {
         String senderEmail = contentObject.getString("senderEmail");
         String recipientEmail = contentObject.getString("recipientEmail");
         String content = contentObject.getString("content");
+        String timestamp = contentObject.getString("timestamp");
         message.setChatRoomID(id);
-        message.setTimestamp(LocalDateTime.now());
+        message.setTimestamp(timestamp);
         message.setContent(content);
         message.setSenderEmail(senderEmail);
         message.setRecipientEmail(recipientEmail);
@@ -96,16 +97,31 @@ public class UserChatController {
         return ResponseEntity.ok().body(chatRoomIDs);
     }
 
-    @GetMapping(path="api/chat/recipientemail/{chatRoomId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getRecipientEmail(@PathVariable String chatRoomId) {
-        String recipientEmail = userMsgSvc.getRecipientEmail(chatRoomId);
+    @PostMapping(path = "api/chat/recipientemail/{chatRoomId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> getRecipientEmail(@PathVariable String chatRoomId, @RequestBody String jsonString) {
+        JsonReader reader = Json.createReader(new StringReader(jsonString));
+        JsonObject jsonObject = reader.readObject();
+        String userEmail = jsonObject.getString("userEmail");
+
+        String recipientEmail = userMsgSvc.getRecipientEmail(chatRoomId, userEmail);
         if (recipientEmail != null) {
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("recipientEmail", recipientEmail);
-            JsonObject jsonObject = builder.build();
-            return ResponseEntity.ok().body(jsonObject.toString());
+                builder.add("recipientEmail", recipientEmail);
+                JsonObject object = builder.build();
+            return ResponseEntity.ok().body(object.toString());
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/api/chat/lastmessage/{chatRoomId}")
+    public ResponseEntity<UserMessages> getLastMessageByChatRoomId(@PathVariable String chatRoomId) {
+        UserMessages lastMessage = userMsgSvc.getLastMessageByChatRoomId(chatRoomId);
+        if (lastMessage != null) {
+            return ResponseEntity.ok(lastMessage);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 

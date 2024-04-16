@@ -1,7 +1,5 @@
 package vttp.batch4.proj.backend.models;
 
-import java.time.LocalDateTime;
-
 import org.bson.Document;
 
 import lombok.AllArgsConstructor;
@@ -18,14 +16,16 @@ public class ChatMessage {
     
     private String groupId;
     private String sender; // Reference to the user who sent the message
+    private String senderEmail;
     private String senderImgId;
     private String content;
-    private LocalDateTime timestamp;
+    private String timestamp;
 
     public Document toDocument() {
 		Document doc = new Document();
 		doc.put("groupId", groupId);
 		doc.put("sender", sender);
+        doc.put("senderEmail", senderEmail);
         doc.put("senderImgId", senderImgId);
         doc.put("content", content);
         doc.put("timestamp", timestamp);

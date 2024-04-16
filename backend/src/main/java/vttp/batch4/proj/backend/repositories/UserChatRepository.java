@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -66,14 +67,34 @@ public class UserChatRepository {
         return messages.stream().map(UserMessages::getChatRoomID).distinct().collect(Collectors.toList());
     }
 
-    public String getRecipientEmail(String chatRoomId) {
-        Query query = new Query(Criteria.where("chatRoomID").is(chatRoomId));
+    public String getRecipientEmail(String chatRoomId, String userEmail) {
+        Criteria criteria = new Criteria().andOperator(
+                Criteria.where("chatRoomID").is(chatRoomId),
+                new Criteria().orOperator(
+                        Criteria.where("senderEmail").is(userEmail),
+                        Criteria.where("recipientEmail").is(userEmail)));
+
+        Query query = new Query(criteria);
         UserMessages message = template.findOne(query, UserMessages.class, "user_messages");
+
         if (message != null) {
-            return message.getRecipientEmail();
+            if (userEmail.equals(message.getSenderEmail())) {
+                return message.getRecipientEmail();
+            } else {
+                return message.getSenderEmail();
+            }
         } else {
-            return null; // or throw exception as per your requirement
+            return null;
         }
+    }
+
+    // Retrieve the last message from a chat room based on chat room ID
+    public UserMessages getLastMessageByChatRoomId(String chatRoomId) {
+        Query query = new Query(Criteria.where("chatRoomID").is(chatRoomId));
+        query.with(Sort.by(Sort.Direction.DESC, "timestamp")); // Sort by timestamp in descending order
+        query.limit(1); // Limit the result to one document
+
+        return template.findOne(query, UserMessages.class, "user_messages");
     }
 
 }

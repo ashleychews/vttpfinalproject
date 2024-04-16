@@ -1,19 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-
-/* Search form */
 .search-form {
     display: flex;
-    align-items: center; /* Center vertically */
-    justify-content: center; /* Center horizontally */
-    margin-top: 20px; /* Adjust margin to center vertically */
+    align-items: center; 
+    justify-content: center;
+    margin-top: 20px;
 }
 
-/* Adjust size of the input field */
 mat-form-field {
-    margin: 0 10px; /* Adjust margin for horizontal spacing */
-    width: 330px; /* Set the width of the search container */
+    margin: 0 10px; 
+    width: 330px; 
+    font-family: "Poppins", sans-serif;
     font-size: 12px;
 }
 
@@ -47,6 +42,7 @@ select {
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 10px;
+    font-family: "Poppins", sans-serif;
 }
 
 .card-container {
@@ -55,10 +51,10 @@ select {
 }
 
 .card {
-    margin-bottom: 20px; /* Set bottom margin for spacing between cards */
+    margin-bottom: 20px;
     border: 1px solid #ccc;
-    flex-basis: calc(33.33% - 20px); /* Set the width for each card with margin */
-    box-sizing: border-box; /* Ensure margin is included in the width calculation */
+    flex-basis: calc(33.33% - 20px); 
+    box-sizing: border-box;
 }
 
 .card:hover .event-image {
@@ -73,13 +69,13 @@ select {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between; /* Distribute items along the main axis with space between */
+    justify-content: space-between; 
 }
 
 mat-card {
     display: block;
     border-radius: 0;
-    max-width: 100%; /* Ensure card content does not overflow */
+    max-width: 100%; 
 }
 
 mat-card-content {
@@ -104,7 +100,7 @@ mat-card-content {
     font-size: 18px;
     text-transform: uppercase;
     font-weight: bold;
-    display: block; /* Make spans block-level elements */
+    display: block;
     text-align: center;
 }
 
@@ -124,23 +120,22 @@ mat-card-content {
 }
 
 .event-image {
-    width: 100%; /* Make the image fill its container */
-    height: 200px; /* Allow the height to adjust proportionally based on the width */
-    transition: opacity 0.3s ease; /* Smooth transition effect */
-    opacity: 1; /* Initially fully opaque */
+    width: 100%; 
+    height: 200px; 
+    transition: opacity 0.3s ease;
+    opacity: 1; 
     object-fit: cover;
 }
 
 .wrapper {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between; /* Distribute items along the main axis with space between */
+    justify-content: space-between;
 }
-
 .button-container {
-    margin-right: 10px; /* Optional: Add margin to separate button from select */
+    margin-right: 10px; 
 }
 
 .select-container {
-    margin-left: auto; /* Push select to the right side by pushing it to the end of available space */
+    margin-left: auto;
 }

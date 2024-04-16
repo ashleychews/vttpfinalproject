@@ -2,6 +2,9 @@ import { HttpClient, HttpResponse } from "@angular/common/http";
 import { ElementRef, Injectable, inject } from "@angular/core";
 import { BehaviorSubject, Observable, firstValueFrom } from "rxjs";
 import { Profile, User, UserMessages } from "../models";
+import { environment } from "../../environments/environment";
+
+const URL = environment.url
 
 @Injectable()
 export class UserService {
@@ -9,22 +12,22 @@ export class UserService {
     private http = inject(HttpClient)
 
     register(userData: User): Promise<any> {
-        return firstValueFrom(this.http.post<User>(`/api/register`, userData))
+        return firstValueFrom(this.http.post<User>(`${URL}/api/register`, userData))
     }
 
     login(userData: User): Promise<any> {
-        return firstValueFrom(this.http.post<User>(`/api/login`, userData))
+        return firstValueFrom(this.http.post<User>(`${URL}/api/login`, userData))
             .then(response => {
                 return response
             })
     }
 
     createProfile(userProfile: Profile): Promise<any> {
-        return firstValueFrom(this.http.post<Profile>(`/api/user/createprofile`, userProfile))
+        return firstValueFrom(this.http.post<Profile>(`${URL}/api/user/createprofile`, userProfile))
     }
 
     getProfile(email: string): Observable<Profile> {
-        return this.http.post<Profile>('/api/profile', { email })
+        return this.http.post<Profile>(`${URL}/api/profile`, { email })
     }
 
     updateProfile(updatedProfile: Profile, elemRef: ElementRef): Observable<any> {
@@ -44,11 +47,11 @@ export class UserService {
 
         console.info("Updating profile:", data)
 
-        return this.http.put<any>(`/api/profile`, data)
+        return this.http.put<any>(`${URL}/api/profile`, data)
     }
 
     getImage(id: string): Observable<HttpResponse<Blob>> {
-        const url = `/api/image/${id}`
+        const url = `${URL}/api/image/${id}`
 
         // Set response type to 'blob' to receive binary data
         return this.http.get(url, { observe: 'response', responseType: 'blob' })
@@ -57,7 +60,7 @@ export class UserService {
     // Send the email data to check if a chat room exists
     checkChatRoom(senderEmail: string, recipientEmail: string): Observable<string | null> {
         const body = { senderEmail, recipientEmail }
-        return this.http.post<string | null>(`/api/chat/check`, body)
+        return this.http.post<string | null>(`${URL}/api/chat/check`, body)
     }
 
     private recipientEmailSubject: BehaviorSubject<string> = new BehaviorSubject<string>('')
@@ -68,15 +71,19 @@ export class UserService {
     }
 
     getMessagesByChatRoomId(chatRoomId: string): Observable<UserMessages[]> {
-        return this.http.get<UserMessages[]>(`api/chat/${chatRoomId}`)
+        return this.http.get<UserMessages[]>(`${URL}/api/chat/${chatRoomId}`)
     }
 
     getChatRoomIDsForUser(senderEmail: string): Observable<string[]> {
-        return this.http.post<string[]>(`/api/chat/user/roomids`, { senderEmail })
+        return this.http.post<string[]>(`${URL}/api/chat/user/roomids`, { senderEmail })
     }
 
-    getRecipientEmail(chatRoomId: string): Observable<{ recipientEmail: string }> {
-        return this.http.get<{ recipientEmail: string }>(`/api/chat/recipientemail/${chatRoomId}`);
+    getRecipientEmail(chatRoomId: string, userEmail: string): Observable<{ recipientEmail: string }> {
+        // userEmail is passed in the request body
+        return this.http.post<{ recipientEmail: string }>(`${URL}/api/chat/recipientemail/${chatRoomId}`, { userEmail });
     }
 
+    getLastMessageByChatRoomId(chatRoomId: string): Observable<UserMessages> {
+        return this.http.get<UserMessages>(`${URL}/api/chat/lastmessage/${chatRoomId}`);
+    }
 }

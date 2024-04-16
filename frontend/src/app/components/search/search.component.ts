@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Events } from '../../models';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { EventService } from '../../services/event.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -33,7 +33,10 @@ export class SearchComponent implements OnInit{
 
   loadEvents(): void {
     if (this.keyword) {
-      this.searchResults$ = this.eventSvc.getEventsBySearch(this.keyword, this.page, this.size);
+      this.searchResults$ = this.eventSvc.getEventsBySearch(this.keyword, this.page, this.size)
+      .pipe(
+        map(events => events.sort((a, b) => new Date(a.localDate).getTime() - new Date(b.localDate).getTime()))
+      )
       this.searchResults$.subscribe(events => {
         this.hasNextPage = events.length >= this.size // Update hasNextPage based on the number of events received
         this.hasPreviousPage = this.page > 0 // Enable previous page if page is greater than 0

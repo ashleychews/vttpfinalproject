@@ -1,6 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+.group-container {
+    display: grid;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+.search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.search-input-container {
+    width: 100%;
+    max-width: 300px;
+}
+
+.searchinput {
+    font-family: "Poppins", sans-serif;
+    font-size: 12px;
+}
 
 .container-fluid {
     margin: 20px;
@@ -17,6 +37,8 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 5px;
 }
 
 .group-name {
@@ -32,7 +54,8 @@
     flex-direction: column;
     width: 280px;
     border: 1px solid #ccc;
-    border-radius: 20px ;
+    border-radius: 20px;
+    max-width: 100%;
 }
 
 .group-details {
@@ -50,7 +73,7 @@
 }
 
 .btn {
-    background-color: grey;
+    background-color: #94b8b8;
     font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-style: bold;
@@ -83,7 +106,6 @@
     font-weight: 700;
     font-style: bold;
     color: #20247b;
-    /* Optional: Customize text color */
 }
 
 .eve-info {
@@ -101,7 +123,7 @@
 .name,
 .place {
     font-family: "Poppins", sans-serif;
-    color:white;
+    color: white;
 }
 
 .name {
@@ -123,4 +145,19 @@
 .loc-icon {
     font-size: 15px;
     color: white;
+}
+
+.user-icon {
+    font-size: 12px;
+}
+
+.no-groups {
+    font-family: "Poppins", sans-serif;
+    color: rgb(199, 107, 107);
+    font-size: 13px;
+}
+
+.select {
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
 }

@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserStore } from '../../services/user.store';
 import { Observable, switchMap } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-details',
@@ -30,6 +31,7 @@ export class DetailsComponent implements OnInit {
   private userSvc = inject(UserService)
   private fb = inject(FormBuilder)
   private router = inject(Router)
+  private snackBar = inject(MatSnackBar)
 
   createform!: FormGroup
   groups$!: Observable<ChatGroup[]>
@@ -37,6 +39,8 @@ export class DetailsComponent implements OnInit {
   showCreateForm: boolean = false
   imageURLs: { [key: string]: string } = {}
   users: Profile[] = []
+
+  authorized = false
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -67,7 +71,7 @@ export class DetailsComponent implements OnInit {
     this.eventSvc.getEventDetails(this.eventId)
       .subscribe(data => {
         this.eventDetails = data;
-        console.log(this.eventDetails);
+        console.log(this.eventDetails)
         if (this.eventDetails.length > 0) {
           const venue = this.eventDetails[0].venue;
           this.getMapUrl(venue.name, venue.address)
@@ -99,14 +103,14 @@ export class DetailsComponent implements OnInit {
     // Fetch images for each group
     this.groups$.subscribe(groups => {
       groups.forEach(group => {
-        this.getImage(group.pictureId);
-        this.fetchUsersForGroup(group); // Call fetchUsersForGroup for each group
+        this.getImage(group.pictureId)
+        this.fetchUsersForGroup(group) // Call fetchUsersForGroup for each group
       })
     })
   }
 
   createGroup(): FormGroup {
-    console.log('Creating group form')
+    //console.log('Creating group form')
     return this.fb.group({
       groupName: this.fb.control<string>('', [Validators.required, Validators.minLength(3)])
     })
@@ -115,7 +119,7 @@ export class DetailsComponent implements OnInit {
   createAndJoinGroup() {
     if (!this.email) {
       // Show an alert if email is not available
-      alert('Email is not available. Cannot create group.')
+      this.show('Not logged in. Cannot create group')
       return // Exit the method if email is not available
     }
 
@@ -148,8 +152,8 @@ export class DetailsComponent implements OnInit {
   joinGroup(groupId: string) {
     console.log('Joining group with ID:', groupId)
     if (!this.email) {
-      alert('Email is not available. Cannot join group.')
-      console.error('Email is not available.')
+      this.show('Please login to enter group')
+      //console.error('Email is not available.')
       return
     }
 
@@ -211,11 +215,10 @@ export class DetailsComponent implements OnInit {
       }
     }
 
-    console.log('length', slicedProfiles.length)
+    //console.log('length', slicedProfiles.length)
 
     return slicedProfiles
   }
-
 
   sliceUsersForDisplay(group: ChatGroup, users: Profile[]): Profile[] {
     return this.sliceUsers(group, users)
@@ -223,8 +226,64 @@ export class DetailsComponent implements OnInit {
 
   // Check if there are more users than the displayed ones
   displayPlusOthers(group: ChatGroup, users: Profile[]): boolean {
-    console.log('group', group.userCount)
+    //console.log('group', group.userCount)
     return group.userCount > 3 && this.sliceUsers(group, users).length === 3;
   }
+
+  authorizeGoogle(): void {
+    this.eventSvc.getGoogleAuthUrl().subscribe(
+      (response) => {
+        console.log('Received authorization URL:', response.authorize);
+        // Open the authorization URL in a new tab or window
+        window.open(response.authorize)
+        // Check authorization status after user attempts to authorize
+        this.checkAuthorizationStatus()
+      },
+      (error) => {
+        console.error('Error getting authorization URL:', error);
+      }
+    )
+  }
+
+  addEventToCalendar(title: string, startDate: string, startTime: string): void {
+
+    if (!this.authorized) {
+      console.error('User is not authorized')
+      return
+    }
+    const fullStartDate = startDate + 'T' + startTime // Combine date and time
+    this.eventSvc.addCalendarEvent(title, fullStartDate)
+      .subscribe(response => {
+        console.log('Response from backend:', response)
+        this.show("successfully added event")
+      }, error => {
+        //console.error('Error:', error)
+        this.show("error in adding event")
+      })
+  }
+
+  checkAuthorizationStatus(): void {
+    this.eventSvc.checkAuthorization().subscribe(
+      (authorized: boolean) => {
+        this.authorized = authorized
+        console.log('Authorization status:', authorized)
+        if (!authorized) {
+          console.log('User not authorized')
+        }
+      },
+      (error) => {
+        console.error('Error checking authorization:', error)
+      }
+    )
+  }
+
+  show(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 2000,
+      horizontalPosition: 'center', // Center horizontally
+      verticalPosition: 'top', // Align at the top
+    })
+  }
+
 
 }

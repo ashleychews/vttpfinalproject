@@ -1,11 +1,12 @@
 <div class="background-image">
-    <img src="/assets/profile-background.jpg">
+    <img src="/assets/profile-background.jpg" style="width: 100%;height: 100%; object-fit: cover; max-width: 100%;">
 </div>
-<div class="container" *ngIf="profile">
-    <div *ngIf="!isEditing; else editMode" class="content">
+<div class="container" *ngIf="profile" style="display: flex;justify-content: space-between;z-index: 0;">
+    <div *ngIf="!isEditing; else editMode" class="content" style="display: flex;">
         <div class="left-card">
             <div class="image">
-                <img *ngIf="imageURL" [src]="imageURL" alt="Profile Picture" class="profile-image" />
+                <img *ngIf="imageURL[profile.pictureId]" [src]="imageURL[profile.pictureId]" alt="Profile Picture"
+                    class="profile-image" />
             </div>
 
             <div class="name-container">
@@ -35,7 +36,7 @@
                 </p>
             </div>
 
-            <div class="edit-button-container">
+            <div class="edit-button-container" style="display: flex; justify-content: center;">
                 <button class="btn1 btn-dark" (click)="toggleEditing()">Edit Profile</button>
             </div>
         </div>
@@ -44,9 +45,9 @@
 
             <div *ngIf="groupsJoined$ | async as groups">
                 <!-- List of groups joined -->
+                <div class="header">Joined Groups</div>
+                <div class="header-sub">{{ groups.length }} groups</div>
                 <div class="group-list" *ngIf="groups.length > 0 else noGroups">
-                    <div class="header">Joined Groups</div>
-                    <div class="header-sub">{{ groups.length }} groups</div>
                     <div class="group-grid">
                         <div class="group-card" *ngFor="let group of groups"
                             [routerLink]="['/chat', group.eventId, group.groupId]">
@@ -54,7 +55,7 @@
                                 <img *ngIf="groupURL[group.pictureId]" [src]="groupURL[group.pictureId]"
                                     alt="Group Image" class="group-image">
                             </div>
-                            <div class="group-name">{{ group.groupName }}</div>
+                            <div class="group-name" style="padding: 10px 0;">{{ group.groupName }}</div>
                         </div>
                     </div>
                 </div>
@@ -64,15 +65,41 @@
             </div>
 
             <div>
-                <div class="header">Your Chats<mat-icon> chat</mat-icon></div>
-                <!-- Display chat room IDs and provide navigation -->
-                <div *ngIf="chatRoomIDs$ | async as chatRoomIDs">
-                    <div *ngFor="let chatRoomId of chatRoomIDs">
-                        <a [routerLink]="['/single-chat', chatRoomId]">Chat Room ID: {{ chatRoomId }}</a>
+                <div *ngIf="chatRoomIDs$ | async as chatRoomIDs" class="chat-room-container"
+                    style="display: flex;flex-direction: column;">
+                    <div class="chat-header">Your Chats<mat-icon> chat</mat-icon></div>
+                    <div class="header-sub">{{ chatRoomIDs.length }} chats</div>
+                    <div *ngIf="chatRoomIDs.length > 0 else noChats">
+                        <div *ngFor="let chatRoomId of chatRoomIDs">
+                            <!-- Check if recipientProfile exists in chatRoomRecipientMap -->
+                            <ng-container *ngIf="chatRoomRecipientMap[chatRoomId] as recipientProfile">
+                                <div *ngIf="lastMessagesMap[chatRoomId]">
+                                    <div (click)="navigateToChatRoom(chatRoomId, recipientProfile.email)"
+                                        class="chat-container"
+                                        [ngClass]="{'sent-by-user': lastMessagesMap[chatRoomId].senderEmail === profile.email}">
+                                        <img *ngIf="imageURL[recipientProfile.pictureId]"
+                                            [src]="imageURL[recipientProfile.pictureId]" alt="Profile Picture"
+                                            class="recipient-image" />
+                                        <div class="recipient-info">
+                                            <div class="recipient-name">
+                                                {{ recipientProfile.firstName }} {{ recipientProfile.lastName }}
+                                            </div>
+                                            <!-- Display last message if available -->
+                                            <div class="last-message"
+                                                style="font-size: 12px;color: rgb(112, 109, 109);">
+                                                {{ lastMessagesMap[chatRoomId].content }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
                     </div>
+                    <ng-template #noChats>
+                        <div class="no-chats-message">You dont have any chats yet</div>
+                    </ng-template>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -84,37 +111,41 @@
                 <div class="card edit-card">
                     <div class="left-content">
                         <p class="about">Edit Profile</p>
-                        <div class="image">
-                            <img *ngIf="imageURL" [src]="imageURL" alt="Current Profile Picture"
-                                class="profile-image" />
+                        <div class="image-container" style="margin-bottom: 10px;">
+                            <div class="image">
+                                <img *ngIf="imageURL[profile.pictureId]" [src]="imageURL[profile.pictureId]"
+                                    alt="Current Profile Picture" class="profile-image" />
+                            </div>
+                            <strong class="input-image">Edit Image: </strong><input class="input-image" type="file"
+                                id="image" formControlName="image" #image>
                         </div>
-                        <input type="file" id="image" formControlName="image" #image>
-
                         <p class="idd1">
-                            <strong>First Name:</strong> <input type="text" id="firstName" formControlName="firstName">
+                            <strong>First Name: </strong> <input type="text" id="firstName" formControlName="firstName">
                         </p>
 
                         <p class="idd1">
-                            <strong>Last Name:</strong> <input type="text" id="lastName" formControlName="lastName">
+                            <strong>Last Name: </strong> <input type="text" id="lastName" formControlName="lastName">
                         </p>
 
                         <p class="idd1">
-                            <strong>Username:</strong> <input type="text" id="userName" formControlName="userName">
+                            <strong>Username: </strong> <input type="text" id="userName" formControlName="userName">
                         </p>
 
                         <p class="idd1">
-                            <strong>Birth Date:</strong> <input type="text" id="birthDate" formControlName="birthDate">
+                            <strong>Birth Date: </strong> <input type="text" id="birthDate" formControlName="birthDate">
                         </p>
                         <p class="idd1">
-                            <strong>Phone Number</strong> <input type="text" id="phoneNo" formControlName="phoneNo">
+                            <strong>Phone Number: </strong> <input type="text" id="phoneNo" formControlName="phoneNo">
                         </p>
 
                     </div>
                 </div>
 
-                <div class="buttons">
-                    <button type="submit" mat-raised-button color="primary">Save</button>
-                    <button type="button" mat-raised-button color="warn" (click)="toggleEditing()">Cancel</button>
+                <div class="buttons" style="display: flex;justify-content: center;margin-top: 20px;">
+                    <button style="margin: 0 5px; background-color: #ff9999;margin-right: 10px;" type="button"
+                        class="btn-cancel" (click)="toggleEditing()">Cancel</button>
+                    <button style="margin: 0 5px;background-color: #80aaff;" type="submit"
+                        class="btn-save">Save</button>
                 </div>
 
             </form>

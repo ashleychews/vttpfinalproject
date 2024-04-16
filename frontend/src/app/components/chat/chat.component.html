@@ -7,7 +7,6 @@
     </div>
 
     <div class="chat-container">
-
       <!-- Form to send messages -->
       <div class="form-container">
         <form [formGroup]="messageForm" (submit)="sendMessage()" class="input-group">
@@ -19,17 +18,40 @@
         </form>
       </div>
 
+      <div class="title-container">
+        <div *ngIf="group" class="title">
+          <div class="title-info">
+            <div class="group-name">{{ group.groupName }}</div>
+            <div class="message-count">{{ numberOfMessages }} messages</div>
+          </div>
 
-      <!-- Display Group Name -->
-      <div *ngIf="group" class="title">
-        <div class="group-name">{{ group.groupName }}</div>
-        <div class="message-count">{{ numberOfMessages }} messages</div>
+          <div class="search-container">
+            <!-- Search icon to toggle visibility -->
+            <span class="search-icon" (click)="toggleSearchInput()">
+              <!-- Add your search icon here, for example, using material icon -->
+              <mat-icon style="margin-right:10px;">search</mat-icon>
+            </span>
+
+            <!-- Form for filtering messages -->
+            <form [formGroup]="messageForm" class="search-form" [class.visible]="showSearchInput">
+              <div class="search-wrapper">
+                <input type="text" formControlName="filterKeyword" placeholder="Filter messages"
+                  (input)="applyLiveFilter()">
+                <!-- Close icon to hide the form -->
+                <span class="close-icon" (click)="toggleSearchInput()">
+                  <mat-icon>close</mat-icon>
+                </span>
+              </div>
+            </form>
+
+          </div>
+        </div>
       </div>
 
       <!-- Loop through message groups -->
-      <div class="scroll">
+      <div class="scroll" #scrollContainer style="overflow-y: scroll; max-height: 80%;">
         <ng-container *ngFor="let group of messageGroups">
-          <div class="message-group">
+          <div class="message-group" style="margin-bottom: 70px;">
             <div class="header">
               <div class="message-date">{{ group.date }}</div>
             </div>
@@ -39,9 +61,8 @@
               <!-- Display profile picture -->
               <div class="profile-image-container">
                 <img *ngIf="imageURLs[message.senderImgId]" [src]="imageURLs[message.senderImgId]" alt="Profile Picture"
-                  class="profile-image" />
+                  class="profile-image" style="margin-right: 10px;object-fit: cover;" />
               </div>
-
 
               <!-- Message content container -->
               <div class="message-content-container">
@@ -50,7 +71,7 @@
                   [ngClass]="{'self-message': message.sender === username,  'other-message': message.sender !== username }">
                   <span class="message-sender"> {{ message.sender | hideSelfName: username}}</span>
                   <!-- Display message content -->
-                  <div class="message-content">{{ message.content }}</div>
+                  <div class="message-content" style="margin-top: 5px;">{{ message.content }}</div>
                   <!-- Display message timestamp -->
                   <div class="message-timestamp">{{ message.timestamp | date: 'shortTime' }}</div>
                 </div>
@@ -66,14 +87,16 @@
       <!-- Group Info Container -->
       <div class="group-info-container" *ngIf="group">
         <span class="group-info">Group Info</span>
-        <!-- Display Group Image -->
         <div class="group-image-container" *ngIf="group.pictureId && imageURLs[group.pictureId]">
-          <img [src]="imageURLs[group.pictureId]" alt="Group Image" class="group-image">
+          <img [src]="imageURLs[group.pictureId]" alt="Group Image" class="group-image"
+            style="width: 120px;height: 120px;border-radius: 50%;object-fit: cover;">
         </div>
+
+        <div class="creation">Created on {{group.timestamp | date: 'd MMM yyyy' }}</div>
+
         <!-- Button to trigger edit group modal -->
         <button class="btn1 btn-dark" (click)="openEditGroupModal()">Edit Group</button>
         <!--button to leave group -->
-        <!-- Button to trigger edit group modal -->
         <button class="btn1 btn-dark" (click)="leaveGroup()">Leave Group</button>
       </div>
 
@@ -85,22 +108,18 @@
         <!-- Display List of Users -->
         <div class="user">
           <div class="user-info" *ngFor="let user of users">
-            <!-- Display profile picture -->
             <img *ngIf="imageURLs[user.pictureId]" [src]="imageURLs[user.pictureId]" alt="Profile Picture"
-              class="profile-image" />
-            <!-- Display user name -->
+              class="profile-image" style="margin-right: 10px; object-fit: cover;" />
             <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
-            <!-- Display "admin" badge for group creator -->
-            <span *ngIf="user.email === creatorEmail" class="admin-badge">admin</span>
+            <span *ngIf="user.email === creatorEmail" class="admin-badge"
+              style="margin-left: 10px; color: grey;">admin</span>
 
-            <button mat-button color="primary" (click)="toggleUserProfile(user.email)">
+            <button *ngIf="shouldDisplayToggle(user.email)" mat-button color="primary"
+              (click)="toggleUserProfile(user.email)">
               {{ profileVisibility[user.email] ? 'bye' : 'hello' }}
             </button>
 
-            <!-- User profile card (conditionally displayed) -->
             <div *ngIf="profileVisibility[user.email]" class="user-profile-card">
-              <!-- Add user profile details here -->
-              <!-- Display profile picture -->
               <img *ngIf="imageURLs[user.pictureId]" [src]="imageURLs[user.pictureId]" alt="Profile Picture"
                 class="user-image">
               <div class="name-container">
@@ -130,11 +149,9 @@
                 </p>
 
                 <div class="buttons">
-                  <button class="btn" (click)="MessageUser(user.email)">Message</button>
+                  <button class="btn1" (click)="MessageUser(user.email)">Message</button>
                 </div>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -143,15 +160,13 @@
 
     <!-- Edit Group Modal -->
     <div *ngIf="showEditModal" class="edit-group-modal">
-      <div class="header-edit">Edit Group Info</div>
+      <div class="header-edit" style="margin-bottom:10px;">Edit Group Info</div>
       <form [formGroup]="groupForm" (submit)="onSubmit()">
         <div>
-          <label for="groupName">Group Name:</label>
-          <input type="text" id="groupName" formControlName="groupName">
+          Group Name: <input type="text" id="groupName" formControlName="groupName">
         </div>
         <div>
-          <label for="image">Group Image:</label>
-          <input type="file" #image formControlName="image">
+          Group Image: <input type="file" #image formControlName="image">
         </div>
 
         <div class="buttons">

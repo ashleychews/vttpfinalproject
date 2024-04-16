@@ -2,7 +2,6 @@ package vttp.batch4.proj.backend.controllers;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,8 @@ public class ChatController {
             throws IOException, InterruptedException {
         String id = UUID.randomUUID().toString().substring(0, 6); // Generate a unique ID
         chatgroup.setGroupId(id); // Set the generated ID to the ChatGroup
-        chatgroup.setTimestamp(LocalDateTime.now());
+        String timestamp = chatgroup.getTimestamp();
+        System.out.println("timestamp" + timestamp);
         // Generate a random seed
         String seed = String.valueOf(new Random().nextInt(100));
 
@@ -201,19 +201,22 @@ public class ChatController {
         JsonReader reader = Json.createReader(new StringReader(message.getContent()));
         JsonObject contentObject = reader.readObject();
         String sender = contentObject.getString("sender");
+        String senderEmail = contentObject.getString("senderEmail");
         String senderImgId = contentObject.getString("senderImgId");
+        String timestamp = contentObject.getString("timestamp");
 
         // Set the sender value in the ChatMessage object
         message.setSender(sender);
+        message.setSenderEmail(senderEmail);
         message.setSenderImgId(senderImgId);
-        message.setTimestamp(LocalDateTime.now());
+        message.setTimestamp(timestamp);
 
         String content = contentObject.getString("content");
         message.setContent(content);
 
         // save to mongo
         chatSvc.saveMessages(message);
-        return new ChatMessage(eventId, message.getSender(), message.getSenderImgId(), message.getContent(),
+        return new ChatMessage(eventId, message.getSender(), message.getSenderEmail(), message.getSenderImgId(), message.getContent(),
                 message.getTimestamp());
     }
 
@@ -222,4 +225,16 @@ public class ChatController {
     public List<ChatMessage> getMessagesByGroupId(@PathVariable String groupId) {
         return chatSvc.getMessagesByGroupId(groupId);
     }
+
+    @PutMapping("api/updatesenderImgId")
+    @ResponseBody
+    public void updateSenderImgId(@RequestBody String jsonString) {
+        JsonReader reader = Json.createReader(new StringReader(jsonString));
+        JsonObject jsonObject = reader.readObject();
+        String email = jsonObject.getString("email");
+        String imageId = jsonObject.getString("imageId");
+
+        chatSvc.updateSenderImgId(email, imageId);
+    }
+
 }

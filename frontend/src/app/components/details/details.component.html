@@ -1,45 +1,49 @@
 <div class="eve-container">
     <div class="event-container">
-        <div *ngIf="eventDetails" class="event-details">
+        <div *ngIf="eventDetails" class="event-details"
+        style="width: 100%;height: 200px;display: flex;">
 
-            <div class="item-left">
-                <div class="event-image-container">
-                    <img [src]="eventDetails[0].imageUrl" alt="Event Image" class="event-image">
+            <div class="item-left" style="flex: 1;">
+                <div class="event-image-container" style="max-width: 360px;">
+                    <img [src]="eventDetails[0].imageUrl" alt="Event Image" class="event-image"
+                    style="width: 100%;height: 200px;object-fit: cover;">
                 </div>
             </div>
             <!-- end item-left -->
-
             <div class="item-right">
                 <h2 class="title">{{ eventDetails[0].name }}</h2>
 
                 <div class="sce">
-                    <div class="icon">
-                        <mat-icon>calendar_today</mat-icon>
+                    <div class="icon" style=" font-size: 20px;margin-right: 10px;">
+                        <mat-icon>date_range</mat-icon>
                     </div>
                     <p>{{ eventDetails[0].localDate | date: 'EEE, d MMM y' }}
                         <br />{{ formatTime(eventDetails[0].localTime) }}
                     </p>
                 </div>
-
                 <div class="fix">
                     <a href="{{eventDetails[0].eventUrl}}">
                         <button mat-button class="learn-more">Learn More</button>
                     </a>
                 </div>
-            </div> <!-- end item-right -->
+                <div>
+                    <button mat-button class="google" *ngIf="!authorized" (click)="authorizeGoogle()">Authorize Google to add event</button>
 
+                    <button mat-button class="google" *ngIf="authorized" (click)="addEventToCalendar(eventDetails[0].name, eventDetails[0].localDate, eventDetails[0].localTime)">Add Event to Calendar</button>
+                </div>
+            </div> <!-- end item-right -->
         </div> <!-- end item -->
     </div>
 
     <p class="header">Place</p>
     <div class="map-container" *ngIf="mapUrl">
-        <div class="location-details">
+        <div class="location-details" style="padding: 10px;">
             <div class="loc-icon">
-                <mat-icon class="loc">location_on</mat-icon>
+                <mat-icon class="loc" style="font-size: 20px;vertical-align: middle;">location_on</mat-icon>
             </div>
-            <div class="location-text">
-                <p class="venue-name-text">{{ eventDetails[0].venue.name }}</p>
-                <p class="venue-add-text">{{ eventDetails[0].venue.address }}</p>
+            <div class="location-text" >
+                <p style="margin: 0;" class="venue-name-text">{{ eventDetails[0].venue.name }}</p>
+                <p style="margin: 0; color: grey;" class="venue-add-text">{{ eventDetails[0].venue.address }}</p>
             </div>
         </div>
         <iframe [src]="mapUrl" width="400" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
@@ -48,32 +52,32 @@
 </div>
 
 <!--groups-->
-
 <div class="container">
-    <div class="header-container">
+    <div class="header-container" style="display: flex;align-items: center;width: 100%;">
         <p class="header">Groups</p>
         <!-- Button to toggle the create group form -->
-        <button mat-raised-button (click)="toggleCreateForm()" class="create-button">
+        <button mat-raised-button (click)="toggleCreateForm()" class="create-button"
+        style="margin-left: auto;display: flex;align-items: center;">
             Create Group <mat-icon class="icon">add</mat-icon> </button>
     </div>
-
     <!-- Create Group Form -->
     <!-- Modal Overlay -->
     <div class="modal-overlay" *ngIf="showCreateForm">
         <!-- Modal Content -->
         <div class="modal-card">
-            <div class="modal-header">
-                <h2 class="new-group">New Group</h2>
+            <div class="modal-header" style="justify-content: center;">
+                <h2 class="new-group" style="text-align: center;">New Group</h2>
             </div>
             <div class="modal-body">
                 <form [formGroup]="createform" (submit)="createAndJoinGroup()">
-                    <div class="modal-group">
+                    <div class="modal-group" style="text-align: center;">
                         Group Name: <input type="text" id="groupName" formControlName="groupName" required>
                     </div>
 
-                    <div class="buttons">
-                        <button type="button" class="btn-cancel" (click)="cancelCreateGroup()">Cancel</button>
-                        <button type="submit" class="btn-create">Create Group</button>
+                    <div class="buttons"
+                    style="display: flex;justify-content: center;margin-top: 20px;margin-right: 5px;">
+                        <button type="button" style="background-color: #ff9999; margin-right: 10px;" class="btn-cancel" (click)="cancelCreateGroup()">Cancel</button>
+                        <button type="submit" style="background-color: #80aaff;" class="btn-create">Create Group</button>
                     </div>
                 </form>
             </div>
@@ -83,30 +87,25 @@
     <div *ngIf="groups$ | async as groups">
         <div *ngIf="groups.length > 0; else NoGroupsContent" class="card-list">
             <div *ngFor="let group of groups" class="group-card">
-                <div class="group-details">
-                    <div class="group-image-con">
+                <div class="group-details" style="display: flex;align-items: center;flex-direction: row;">
+                    <div class="group-image-con" style="width: 200px;margin-right: 10px">
                         <img *ngIf="imageURLs[group.pictureId]" [src]="imageURLs[group.pictureId]" alt="Group Image"
                             class="group-img">
                     </div>
-                    <div class="group-info">
+                    <div class="group-info" style="display: flex;flex-direction: column;align-items: center;">
                         <p class="group-name">{{ group.groupName }}</p>
                         <div class="info-container">
-                            <div class="sliced-users">
+                            <div class="sliced-users" style="display: flex;align-items: center;">
                                 <div *ngFor="let user of sliceUsersForDisplay(group, users); let first = first" class="user-wrapper">
                                   <img *ngIf="imageURLs[user.pictureId]" [src]="imageURLs[user.pictureId]"
                                        alt="Profile Picture" class="profile-image" [class.full-circle]="first"
-                                       style="width: 30px; height: 30px;" />
+                                       style="width: 30px; height: 30px; border-radius: 50%;object-fit: cover;" />
                                 </div>
                                 <span *ngIf="displayPlusOthers(group, users)" class="user-count">
                                     +{{ group.userCount - 3 }} others
                                 </span>
                                 
                               </div>
-                        </div>
-
-                        <div>
-                            <mat-icon class="icon">date_range</mat-icon>
-                            <span> Created on {{ group.timestamp | date: 'dd MMM yyyy' }}</span>
                         </div>
 
                         <div>

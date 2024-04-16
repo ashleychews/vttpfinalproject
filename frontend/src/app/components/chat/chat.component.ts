@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { WebSocketService } from '../../services/web-socket.service';
-import { Subscription } from 'rxjs';
+import { Subscription, debounceTime, distinctUntilChanged, startWith } from 'rxjs';
 import { Message } from '@stomp/stompjs';
 import { ChatGroup, ChatMessage, MessageGroup, Profile } from '../../models';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -10,6 +10,7 @@ import { UserService } from '../../services/user.service';
 import { UserStore } from '../../services/user.store';
 import { HttpResponse } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private messageSub!: Subscription
 
@@ -45,15 +46,23 @@ export class ChatComponent implements OnInit, OnDestroy {
   private userSvc = inject(UserService)
   private router = inject(Router)
 
+  private snackBar = inject(MatSnackBar)
+
   imageURLs: { [key: string]: string } = {} //profile image
   users: Profile[] = []
   profileVisibility: { [key: string]: boolean } = {}
 
   senderEmail!: string
+  user!: string
+
+  filterKeyword!: ''
 
   //this is for the image
   @ViewChild('image')
   image!: ElementRef
+
+  @ViewChild('scrollContainer')
+  private scrollContainer!: ElementRef
 
   ngOnInit(): void {
 
@@ -70,6 +79,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.userSvc.getProfile(email)
         .subscribe((profile: Profile) => {
           this.username = profile.userName
+          this.senderEmail = profile.email
           this.pictureId = profile.pictureId
         })
     })
@@ -83,8 +93,22 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     // Fetch users and initialize profile visibility state
     this.users.forEach(user => {
-      this.profileVisibility[user.email] = false; // Initialize all profiles as hidden
+      this.profileVisibility[user.email] = false // Initialize all profiles as hidden
     })
+
+
+    // Subscribe to search input changes for live filtering
+    this.messageForm.get('filterKeyword')?.valueChanges
+      .pipe(
+        startWith(''), // Emit an initial value to trigger filtering
+        debounceTime(300), // Wait for 300ms after each keystroke
+        distinctUntilChanged() // Filter out repeated consecutive values
+      )
+      .subscribe(searchTerm => {
+        this.filterKeyword = searchTerm.toLowerCase()
+        this.applyLiveFilter()
+      });
+
   }
 
   ngOnDestroy(): void {
@@ -100,16 +124,17 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (messageContent.trim() !== '') {
       const message: ChatMessage = {
         sender: this.username,
+        senderEmail: this.senderEmail,
         senderImgId: this.pictureId,
         content: messageContent,
         timestamp: new Date()
       }
       // Add the sent message to the messages array
-      this.messages.push(message)
+      // this.messages.push(message)
       // Update messageGroups with the new message
-      this.messageGroups = this.groupMessagesByDate(this.messages)
+      // this.messageGroups = this.groupMessagesByDate(this.messages)
       // Update the total number of message
-      this.numberOfMessages++
+      //this.numberOfMessages++
       this.webSocketSvc.sendMessage(this.eventId, this.groupId, JSON.stringify(message))
       this.messageForm.reset() // Reset the form after sending the message
     }
@@ -119,16 +144,26 @@ export class ChatComponent implements OnInit, OnDestroy {
     const messageContent: ChatMessage = JSON.parse(message.body)
     const formattedMessage = {
       sender: messageContent.sender,
+      senderEmail: messageContent.senderEmail,
       senderImgId: messageContent.senderImgId,
       content: messageContent.content,
       timestamp: messageContent.timestamp
     }
     this.messages.push(formattedMessage)
+    // Update messageGroups with the new message
+    this.numberOfMessages++
+    this.messageGroups = this.groupMessagesByDate(this.messages)
+
+    setTimeout(() => {
+      this.scrollToBottom()
+    }, 100)
+
   }
 
   initForm() {
     this.messageForm = this.fb.group({
-      message: this.fb.control<string>('', [Validators.required]) // Define a form control for the message input
+      message: this.fb.control<string>('', [Validators.required]),
+      filterKeyword: this.fb.control<string>('')
     })
   }
 
@@ -138,8 +173,13 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.messages = messages
       console.log('Loaded messages:', messages);
       // Group messages by date
-      this.messageGroups = this.groupMessagesByDate(messages);
+      this.messageGroups = this.groupMessagesByDate(messages)
       this.fetchProfileImagesForSenders() // call the profile after message is loaded
+
+      // After updating the messages and view, scroll to bottom
+      setTimeout(() => {
+        this.scrollToBottom();
+      }, 100)
     })
   }
 
@@ -209,15 +249,12 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     return groups
   }
-
-  // Update this method to listen for form changes
   onFormChanges() {
     this.messageForm.valueChanges.subscribe(() => {
       this.disabled = this.messageForm.invalid
     })
   }
 
-  // Method to navigate back to group/:eventId route
   goBackToGroup() {
     const eventId = this.route.snapshot.paramMap.get('eventId')
     this.router.navigate(['/event-details', eventId])
@@ -280,11 +317,12 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.chatSvc.updateChatGroup(this.groupId, updatedGroup, this.image)
         .subscribe(response => {
           // Handle success
-          console.log('Group updated successfully', response)
+          this.show('Group updated successfully')
           // Update group details in the UI
           this.group.groupName = response.groupName
           this.group.pictureId = response.pictureId
           this.closeEditGroupModal()
+          this.getImage(response.pictureId) //fetch updated image
         }, (error) => {
           // Handle error
           console.error('Error updating group:', error)
@@ -292,17 +330,18 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
-  leaveGroup(){
+  leaveGroup() {
     // Get the user's email from the store
     this.userStore.getEmail.subscribe(email => {
       // Call the service method to leave the group
       this.chatSvc.leaveChatGroup(this.groupId, email)
         .subscribe(response => {
+          this.show("Leaving group....")
           console.log(response)
           const eventId = this.route.snapshot.paramMap.get('eventId')
           this.router.navigate(['/event-details', eventId])
         }, error => {
-          console.error(error) // Handle error
+          console.error(error)
         })
     })
   }
@@ -316,19 +355,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userStore.getEmail.subscribe(email => this.senderEmail = email)
 
     console.log('messaging', recipientEmail)
-    this.userSvc.setRecipientEmail(recipientEmail);
+    this.userSvc.setRecipientEmail(recipientEmail)
 
     this.userSvc.checkChatRoom(this.senderEmail, recipientEmail).subscribe(
       (response: any) => {
-        const chatRoomId: string = response.chatRoomId;
-    
+        const chatRoomId: string = response.chatRoomId
+
         if (chatRoomId !== "0") {
-          console.log('Chat room already exists with ID:', chatRoomId);
-          this.router.navigate(['/single-chat', chatRoomId]);
+          console.log('Chat room already exists with ID:', chatRoomId)
+          this.router.navigate(['/single-chat', chatRoomId])
         } else {
-          const chatRoomId = uuidv4().substring(0,6)
+          const chatRoomId = uuidv4().substring(0, 6)
           console.log('Generated chatRoomId:', chatRoomId)
-          this.router.navigate(['/single-chat', chatRoomId ])
+          this.router.navigate(['/single-chat', chatRoomId])
         }
       },
       error => {
@@ -336,6 +375,46 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     )
   }
-  
+
+  shouldDisplayToggle(email: string): boolean {
+    this.userStore.getEmail.subscribe(email => { this.user = email })
+    return this.user != email
+  }
+
+  // Function to scroll to bottom
+  scrollToBottom() {
+    if (this.scrollContainer) {
+      try {
+        this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight
+      } catch (err) { }
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.scrollToBottom()
+  }
+
+  show(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 2000,
+      horizontalPosition: 'center', // Center horizontally
+      verticalPosition: 'top', // Align at the top
+    })
+  }
+
+
+  applyLiveFilter() {
+    const filteredMessages = this.messages.filter(message =>
+      message.content.toLowerCase().includes(this.messageForm.get('filterKeyword')?.value.toLowerCase())
+    )
+
+    this.messageGroups = this.groupMessagesByDate(filteredMessages);
+  }
+
+  showSearchInput: boolean = false
+
+  toggleSearchInput(): void {
+    this.showSearchInput = !this.showSearchInput
+  }
 
 }

@@ -1,48 +1,71 @@
 <div class="container-fluid">
     <h1 class="header-discover">Discover Groups</h1>
-    <div *ngIf="groups$ | async as groups" class="container">
-        <div *ngIf="groups.length > 0" class="row">
-            <div *ngFor="let group of groups" class="col-12 col-md-4 mb-4">
-                <!-- Event Image Container -->
-                <div class="card" *ngIf="eventDetails[group.eventId]">
-                    <div class="event-container">
-                        <div class="event-content">
-                            <img [src]="eventDetails[group.eventId].imageUrl" alt="Event Image" class="event-img">
-                            <div class="date-container">
-                                <span class="month">{{ eventDetails[group.eventId].localDate | date: 'MMM' }}</span>
-                                <span class="day">{{ eventDetails[group.eventId].localDate | date: 'd' }}</span>
+
+    <div class="group-container">
+        <div class="filter-container">
+            <select #trendingFilterSelect (change)="selectionFilter(trendingFilterSelect.value)" class="select">
+                <option value="">None</option>
+                <option value="userCount">User Count</option>
+                <option value="creationDate">Creation Date</option>
+                <option value="eventDate">Event Date</option>
+            </select>
+        </div>
+
+        <!-- Search Form using FormGroup -->
+        <form [formGroup]="searchForm" class="search-form">
+            <mat-form-field appearance="outline" class="search-input-container">
+                <input matInput type="text" placeholder="Search groups by name" formControlName="keyword"
+                    class="searchinput">
+                <button mat-button matSuffix type="submit">
+                    <mat-icon>search</mat-icon>
+                </button>
+            </mat-form-field>
+        </form>
+
+        <div *ngIf="groups$ | async as groups" class="container">
+            <div *ngIf="groups.length > 0" class="row">
+                <div *ngFor="let group of groups" class="col-12 col-md-4 mb-4">
+                    <!-- Event Image Container -->
+                    <div class="card" *ngIf="eventDetails[group.eventId]">
+                        <div class="event-container">
+                            <div class="event-content">
+                                <img [src]="eventDetails[group.eventId].imageUrl" alt="Event Image" class="event-img">
+                                <div class="date-container">
+                                    <span class="month">{{ eventDetails[group.eventId].localDate | date: 'MMM' }}</span>
+                                    <span class="day">{{ eventDetails[group.eventId].localDate | date: 'd' }}</span>
+                                </div>
+                            </div>
+
+                            <div class="eve-info">
+                                <span class="name">{{eventDetails[group.eventId].name}}</span>
+                                <div class="venue-info">
+                                    <mat-icon class="loc-icon">location_on</mat-icon>
+                                    <span class="place">{{ eventDetails[group.eventId].venue.name }}</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="eve-info">
-                            <span class="name">{{eventDetails[group.eventId].name}}</span>
-                            <div class="venue-info">
-                                <mat-icon class="loc-icon">location_on</mat-icon>
-                                <span class="place">{{ eventDetails[group.eventId].venue.name }}</span>
+                        <!-- Group Details Container -->
+                        <div class="group-details">
+                            <div class="group-image">
+                                <img *ngIf="imageURLs[group.pictureId]" [src]="imageURLs[group.pictureId]"
+                                    alt="Group Image" class="group-image">
                             </div>
-                        </div>
-                    </div>
+                            <div class="group-info">
+                                <h3 class="group-name">{{ group.groupName }}</h3>
+                            </div>
+                            <div class="btns">
+                                <button class="btn" (click)="joinGroup(group.groupId, group.eventId)">
+                                    join group </button>
+                            </div>
 
-                    <!-- Group Details Container -->
-                    <div class="group-details">
-                        <div class="group-image">
-                            <img *ngIf="imageURLs[group.pictureId]" [src]="imageURLs[group.pictureId]" alt="Group Image"
-                                class="group-image">
                         </div>
-                        <div class="group-info">
-                            <h3 class="group-name">{{ group.groupName }}</h3>
-                        </div>
-                        <div class="btns">
-                            <button class="btn" (click)="joinGroup(group.groupId, group.eventId)">
-                                join group </button>
-                        </div>
-
                     </div>
                 </div>
             </div>
-        </div>
-        <div *ngIf="groups.length === 0">
-            <p>No groups found.</p>
+            <div *ngIf="groups.length === 0">
+                <p class="no-groups">No groups found.</p>
+            </div>
         </div>
     </div>
 </div>

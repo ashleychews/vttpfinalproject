@@ -1,26 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-
 .card {
-    margin-bottom: 20px; /* Set bottom margin for spacing between cards */
+    margin-bottom: 20px; 
     border: 1px solid #ccc;
-    flex-basis: calc(33.33% - 20px); /* Set the width for each card with margin */
-    box-sizing: border-box; /* Ensure margin is included in the width calculation */
+    flex-basis: calc(33.33% - 20px);
+    box-sizing: border-box;
 }
 
 .event-image {
-    width: 100%; /* Make the image fill its container */
-    height: 200px; /* Allow the height to adjust proportionally based on the width */
-    transition: opacity 0.3s ease; /* Smooth transition effect */
-    opacity: 1; /* Initially fully opaque */
+    width: 100%; 
+    height: 200px; 
+    transition: opacity 0.3s ease;
+    opacity: 1; 
     object-fit: cover;
 }
 
 mat-card {
     display: block;
     border-radius: 0;
-    max-width: 100%; /* Ensure card content does not overflow */
+    max-width: 100%; 
 }
 
 mat-card-content {
@@ -45,7 +41,7 @@ mat-card-content {
     font-size: 18px;
     text-transform: uppercase;
     font-weight: bold;
-    display: block; /* Make spans block-level elements */
+    display: block; 
     text-align: center;
 }
 
@@ -59,21 +55,29 @@ mat-card-content {
 
 .buttons {
     position: fixed;
-    bottom: 20px; /* Adjust this value to set the distance from the bottom */
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .results-container {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    justify-content: center;
+    align-items: center; 
     border: 1px solid #ccc;
-    height: 30px;
+    height: 50px;
 }
 
 .text {
     font-family: "Lato", sans-serif; 
-    font-size: 12px; 
+    font-size: 14px; 
     color: #333;
+}
+
+.card:hover .event-image {
+    opacity: 0.5;
+}
+
+.card:hover {
+    cursor: pointer;
 }

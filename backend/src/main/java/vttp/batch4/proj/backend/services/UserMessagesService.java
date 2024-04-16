@@ -33,8 +33,11 @@ public class UserMessagesService {
         return userchatRepo.getChatRoomIDsForUser(userEmail);
     }
 
-    public String getRecipientEmail(String chatRoomId) {
-        return userchatRepo.getRecipientEmail(chatRoomId);
+    public String getRecipientEmail(String chatRoomId, String userEmail) {
+        return userchatRepo.getRecipientEmail(chatRoomId, userEmail);
     }
 
+    public UserMessages getLastMessageByChatRoomId(String chatRoomId) {
+        return userchatRepo.getLastMessageByChatRoomId(chatRoomId);
+    }
 }

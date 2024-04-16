@@ -43,7 +43,6 @@
     </mat-error>
   </mat-form-field>
 
-
   <span>COUNTRY</span>
   <select formControlName="country" class="form-control" id="country">
     <option value="">Select Country</option>
@@ -51,5 +50,5 @@
   </select>
   <div *ngIf="profileForm.get('country')?.errors?.['required']" class="text-danger">Please select a country</div>
 
-  <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">Save Profile</button>
+  <button style="margin-top: 15px; font-size: 14px;" mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">Save Profile</button>
 </form>

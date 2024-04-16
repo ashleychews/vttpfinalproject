@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { UserWebSocketService } from '../../services/user-web-socket.service';
@@ -14,7 +14,7 @@ import { HttpResponse } from '@angular/common/http';
   templateUrl: './userchat.component.html',
   styleUrl: './userchat.component.css'
 })
-export class UserchatComponent implements OnInit {
+export class UserchatComponent implements OnInit, AfterViewInit {
 
 
   senderId: string = '';
@@ -45,6 +45,9 @@ export class UserchatComponent implements OnInit {
 
   chatRoomIDs: string[] = []
   selectedChatRoomId!: string
+
+  @ViewChild('scrollContainer')
+  private scrollContainer!: ElementRef
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -83,6 +86,7 @@ export class UserchatComponent implements OnInit {
       })
     })
 
+
   }
 
   ngOnDestroy(): void {
@@ -96,7 +100,7 @@ export class UserchatComponent implements OnInit {
     this.userWebSocketSvc.connectToSingleUserChat(
       this.id,
       this.onMessageReceived.bind(this)
-    );
+    )
   }
 
   onMessageReceived(message: Message): void {
@@ -110,6 +114,10 @@ export class UserchatComponent implements OnInit {
     }
     this.messages.push(formattedMessage)
     this.groupedMessages = this.groupMessagesByDate(this.messages)
+
+    setTimeout(() => {
+      this.scrollToBottom()
+    }, 100)
 
   }
 
@@ -155,6 +163,10 @@ export class UserchatComponent implements OnInit {
         this.messages = messages
         this.groupedMessages = this.groupMessagesByDate(messages) // Group messages
         console.log('Loaded messages:', this.messages)
+        // After updating the messages and view, scroll to bottom
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 100); // Adjust the delay as needed
       },
       (error) => {
         console.error('Error loading messages:', error)
@@ -205,5 +217,25 @@ export class UserchatComponent implements OnInit {
         }
       )
   }
+
+  scrollToBottom() {
+    console.log('Scrolling to bottom'); // Log scroll action
+    try {
+      if (this.scrollContainer && this.scrollContainer.nativeElement) {
+        const container = this.scrollContainer.nativeElement
+        container.scrollTop = container.scrollHeight
+        console.log('Container Scrolled Successfully')
+      }
+    } catch (err) {
+      console.error('Error scrolling to bottom:', err)
+    }
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 100);
+  }
+
 
 }

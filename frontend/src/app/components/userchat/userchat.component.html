@@ -19,7 +19,7 @@
         </div>
 
         <!-- Loop through message groups -->
-        <div class="scroll">
+        <div class="scroll" #scrollContainer>
             <!-- Loop through grouped messages -->
             <div *ngFor="let dateKey of groupedMessagesKeys()">
                 <div class="header">
@@ -33,7 +33,7 @@
                     <div class="message"
                         [ngClass]="{ 'self-message' : isSender(message.senderEmail), 'other-message': !isSender(message.senderEmail) }">
                         <div class="content">{{ message.content }}</div>
-                        <div class="timestamp">{{ message.timestamp | date: 'shortTime' }}</div>
+                        <div class="timestamp">{{ message.timestamp |  date: 'shortTime' }}</div>
                     </div>
                 </div>
             </div>

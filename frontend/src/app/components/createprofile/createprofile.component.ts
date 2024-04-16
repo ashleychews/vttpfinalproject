@@ -4,6 +4,7 @@ import { UserService } from '../../services/user.service';
 import { UserStore } from '../../services/user.store';
 import { Router } from '@angular/router';
 import { COUNTRY_LIST } from '../../constants';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile',
@@ -19,6 +20,8 @@ export class CreateProfileComponent implements OnInit{
   private userSvc = inject(UserService)
   private userStore = inject(UserStore)
   private router = inject(Router)
+
+  private snackBar = inject(MatSnackBar)
 
   countryList = COUNTRY_LIST
 
@@ -44,14 +47,14 @@ export class CreateProfileComponent implements OnInit{
       const profileData = { ...this.profileForm.value, email: this.email }
       this.userSvc.createProfile(profileData)
         .then(() => {
-          console.log('Profile setup successful')
-          alert('Profile setup successful')
+          //console.log('Profile setup successful')
+          this.show('Profile setup successful')
           // Redirect to dashboard
           this.router.navigate(['/profile'])
         })
         .catch(error => {
-          console.error('Error setting up profile:', error)
-          alert('Error setting up profile')
+          //console.error('Error setting up profile:', error)
+          this.show('Error setting up profile')
         })
     }
   }
@@ -61,9 +64,17 @@ export class CreateProfileComponent implements OnInit{
     const birthDate = new Date(control.value)
     const currentDate = new Date()
     if (birthDate >= currentDate) {
-      return { futureDate: true } // Return custom error if birth date is in the future
+      return { futureDate: true }
     }
-    return null // Return null if validation passes
+    return null 
+  }
+
+  show(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 2000,
+      horizontalPosition: 'center', // Center horizontally
+      verticalPosition: 'top', // Align at the top
+    })
   }
 
 
