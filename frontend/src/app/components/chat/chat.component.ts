@@ -316,7 +316,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
       // Send the updated group info and image to the service method for updating
       this.chatSvc.updateChatGroup(this.groupId, updatedGroup, this.image)
         .subscribe(response => {
-          // Handle success
           this.show('Group updated successfully')
           // Update group details in the UI
           this.group.groupName = response.groupName

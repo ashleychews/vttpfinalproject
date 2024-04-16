@@ -34,7 +34,6 @@ export class ChatGroupComponent implements OnInit {
   ngOnInit(): void {
     this.loadAllGroups()
 
-    // Subscribe to getEmail once and store the email value
     this.userStore.getEmail.subscribe({
       next: (email: string) => {
         this.email = email
@@ -50,7 +49,6 @@ export class ChatGroupComponent implements OnInit {
       keyword: this.fb.control<string>('')
     })
 
-    // Subscribe to search input changes for live filtering
     this.searchForm.get('keyword')?.valueChanges
       .pipe(
         startWith(''), // Emit an initial value to trigger filtering

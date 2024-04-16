@@ -13,12 +13,11 @@
     flex: 1 1 auto;
 }
 
-/* Align the form fields vertically */
 form {
     display: flex;
     flex-direction: column;
-    width: 300px; /* Adjust the width as needed */
-    margin: 0 auto; /* Center the form horizontally */
+    width: 300px;
+    margin: 0 auto; 
 }
 
 mat-card-title {
