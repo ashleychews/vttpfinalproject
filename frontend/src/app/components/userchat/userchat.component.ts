@@ -55,7 +55,7 @@ export class UserchatComponent implements OnInit, AfterViewInit {
       console.log('Received chatRoomId:', this.id)
     })
 
-    this.initForm() // Initialize the form
+    this.initForm()
 
     this.connectToWebSocket()
 
@@ -64,7 +64,6 @@ export class UserchatComponent implements OnInit, AfterViewInit {
       this.senderEmail = email
       // Fetch sender's and recipient's profiles based on their emails
       this.userSvc.getProfile(this.senderEmail).subscribe(profile => {
-        // Handle sender profile data
         this.senderProfile = profile
         this.getImage(this.senderProfile.pictureId) // Fetch sender's image
         console.log('Sender Profile:', this.senderProfile)
@@ -85,8 +84,6 @@ export class UserchatComponent implements OnInit, AfterViewInit {
         this.loadMessages(this.id)
       })
     })
-
-
   }
 
   ngOnDestroy(): void {
@@ -205,8 +202,8 @@ export class UserchatComponent implements OnInit, AfterViewInit {
             const reader = new FileReader();
             reader.onload = () => {
               const imageURL = reader.result as string
-              this.imageURLs[id] = imageURL; // Store image URL
-            };
+              this.imageURLs[id] = imageURL
+            }
             reader.readAsDataURL(response.body)
           } else {
             console.error('Error: Response body is null')
@@ -219,7 +216,7 @@ export class UserchatComponent implements OnInit, AfterViewInit {
   }
 
   scrollToBottom() {
-    console.log('Scrolling to bottom'); // Log scroll action
+    console.log('Scrolling to bottom') // Log scroll action
     try {
       if (this.scrollContainer && this.scrollContainer.nativeElement) {
         const container = this.scrollContainer.nativeElement

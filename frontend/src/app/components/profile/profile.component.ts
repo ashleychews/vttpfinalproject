@@ -160,7 +160,7 @@ export class ProfileComponent implements OnInit {
         if (response.body) {
           const reader = new FileReader()
           reader.onload = () => {
-            this.imageURL[id] = reader.result as string;
+            this.imageURL[id] = reader.result as string
           }
           reader.readAsDataURL(response.body)
         } else {

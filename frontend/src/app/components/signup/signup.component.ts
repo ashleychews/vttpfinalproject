@@ -45,7 +45,7 @@ export class SignupComponent {
           this.router.navigate(['/createprofile'])
         })
         .catch(err => {
-          alert('Registration failed');
+          alert('Registration failed')
         })
 
     }
@@ -56,26 +56,25 @@ export class SignupComponent {
     
     // Check if password contains at least one lowercase letter
     if (!/[a-z]/.test(password)) {
-      return { lowercase: true };
+      return { lowercase: true }
     }
 
     // Check if password contains at least one uppercase letter
     if (!/[A-Z]/.test(password)) {
-      return { uppercase: true };
+      return { uppercase: true }
     }
 
     // Check if password contains at least one digit
     if (!/\d/.test(password)) {
-      return { digit: true };
+      return { digit: true }
     }
 
     // Check if password contains at least one special character
     if (!/[^a-zA-Z0-9]/.test(password)) {
-      return { specialChar: true };
+      return { specialChar: true }
     }
 
-    // If all conditions are met, return null (valid password)
-    return null;
+    return null
   }
 
 }

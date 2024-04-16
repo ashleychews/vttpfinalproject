@@ -413,7 +413,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 
   showSearchInput: boolean = false
 
-  toggleSearchInput(): void {
+  toggleSearchInput() {
     this.showSearchInput = !this.showSearchInput
   }
 
